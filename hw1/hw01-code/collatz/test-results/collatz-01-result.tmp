@@ -1,0 +1,21 @@
+(TEST 1) collatz_next(1)
+COMMENTS:
+Runs collatz_next() on argument 1 which should return 0 as starting
+point 1 is 'converged' for the Collatz sequence.
+
+
+program: ./test_collatz next 1
+Failure messages:
+- FAILURE: Output Mismatch at lines marked
+
+--- Side by Side Differences ---
+- Expect output in: test-results/collatz-01-expect.tmp
+- Acutal output in: test-results/collatz-01-actual.tmp
+- Differing lines have a character like '|' in the middle\n
+==== EXPECT ====          ==== ACTUAL ====       
+running collatz_next(1)   running collatz_next(1)
+returned: 0             | returned: 1
+--- Line Differences ---
+EXPECT:   2) returned: 0
+ACTUAL:   2) returned: 1
+
