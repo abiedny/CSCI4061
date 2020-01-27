@@ -4,8 +4,8 @@
                             ________________
 
 
-- Name: (FILL THIS in)
-- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+- Name: Alex Biedny
+- NetID: biedn001
 
 Write your answers to the questions below directly in this text file.
 Submit the whole text file while taking the associated quiz.
@@ -41,6 +41,27 @@ PROBLEM 1: Compile and Run via make
   ,----
   | > gcc -o coll collatz_funcs.c collatz_main.c 
   `----
+  Results:
+  	abied@LAPTOP-E6H4COPE:~/CSCI4061/hw1/hw01-code/collatz$ ./coll
+	Enter the starting integer:
+	>> 17
+	The next value in the Collatz sequence is 52
+	Show output of steps (0:NO, any other int: yes):
+	>> 1
+	Step 0: 17
+	Step 1: 52
+	Step 2: 26
+	Step 3: 13
+	Step 4: 40
+	Step 5: 20
+	Step 6: 10
+	Step 7: 5
+	Step 8: 16
+	Step 9: 8
+	Step 10: 4
+	Step 11: 2
+	Step 12: 1
+	The starting value 17 converged to 1 in 12 steps
 
 
 (B) Use of Makefiles
@@ -129,6 +150,35 @@ PROBLEM 1: Compile and Run via make
   Type the command `make' and paste the results of this command below.
   Run the program that results from this compilation and show it below.
 
+Make:
+abied@LAPTOP-E6H4COPE:~/CSCI4061/hw1/hw01-code/collatz$ make
+gcc -Wall -g -c collatz_funcs.c
+gcc -Wall -g -c collatz_main.c
+gcc -Wall -g -o collatz_main collatz_funcs.o collatz_main.o
+collatz_main is ready
+
+Running Program:
+abied@LAPTOP-E6H4COPE:~/CSCI4061/hw1/hw01-code/collatz$ ./collatz_main
+Enter the starting integer:
+>> 17
+The next value in the Collatz sequence is 52
+Show output of steps (0:NO, any other int: yes):
+>> 1
+Step 0: 17
+Step 1: 52
+Step 2: 26
+Step 3: 13
+Step 4: 40
+Step 5: 20
+Step 6: 10
+Step 7: 5
+Step 8: 16
+Step 9: 8
+Step 10: 4
+Step 11: 2
+Step 12: 1
+The starting value 17 converged to 1 in 12 steps
+
 
 (C) Makefile Targets
 ~~~~~~~~~~~~~~~~~~~~
@@ -144,6 +194,12 @@ PROBLEM 1: Compile and Run via make
   class will feature some sort of testing target which will run
   automated tests of the correctness of a program.
 
+  Answer:
+	The clean command will remove any already compiled binaries from the project directory, it is just running a shell command
+	to remove all files ending with .o and a few other binaries. The test command will compile the collatz program along with
+	the test functions, adjust some permissions, and then run the test program. The test command makes use of some of the other
+	targets in the makefile, which will be used when the test command is ran.
+	
 
 (D) Testing Code
 ~~~~~~~~~~~~~~~~
@@ -214,6 +270,94 @@ PROBLEM 1: Compile and Run via make
   In space below, paste the results of running the above `make' commands
   in a terminal.
 
+Answers:
+abied@LAPTOP-E6H4COPE:~/CSCI4061/hw1/hw01-code/collatz$ make test testnum=12
+./testy test_collatz.org 12
+============================================================
+== testy test_collatz.org : collatz_func.c and collatz_main.c tests
+== Running 1 / 15 tests
+12) collatz_steps() from 14      : FAIL -> results in file 'test-results/collatz-12-result.tmp'
+============================================================
+RESULTS: 0 / 1 tests passed
+
+abied@LAPTOP-E6H4COPE:~/CSCI4061/hw1/hw01-code/collatz$ make test testnum='3 5 12'
+./testy test_collatz.org 3 5 12
+============================================================
+== testy test_collatz.org : collatz_func.c and collatz_main.c tests
+== Running 3 / 15 tests
+3)  collatz_next(-5)             : ok
+5)  collatz_next(16)             : ok
+12) collatz_steps() from 14      : FAIL -> results in file 'test-results/collatz-12-result.tmp'
+============================================================
+RESULTS: 2 / 3 tests passed
+
+abied@LAPTOP-E6H4COPE:~/CSCI4061/hw1/hw01-code/collatz$ make test testnum=12 SHOW=1
+./testy test_collatz.org 12
+============================================================
+== testy test_collatz.org : collatz_func.c and collatz_main.c tests
+== Running 1 / 15 tests
+12) collatz_steps() from 14      : FAIL -> results in file 'test-results/collatz-12-result.tmp'
+============================================================
+RESULTS: 0 / 1 tests passed
+
+
+FAILURE RESULTS
+----------------------------------------
+(TEST 12) collatz_steps() from 14
+COMMENTS:
+Runs collatz_next(14, 5), should return steps with some lines of
+output. Note that the '5' is non-zero which should trigger output.
+
+
+program: ./test_collatz steps 14 5
+Failure messages:
+- FAILURE: Output Mismatch at lines marked
+
+--- Side by Side Differences ---
+- Expect output in: test-results/collatz-12-expect.tmp
+- Acutal output in: test-results/collatz-12-actual.tmp
+- Differing lines have a character like '|' in the middle\n
+==== EXPECT ====               ==== ACTUAL ====
+running collatz_steps(14, 5)   running collatz_steps(14, 5)
+Step 0: 14                     Step 0: 14
+Step 1: 7                    <
+Step 2: 22                   <
+Step 3: 11                   <
+Step 4: 34                   <
+Step 5: 17                   <
+Step 6: 52                   <
+Step 7: 26                   <
+Step 8: 13                   <
+Step 9: 40                   <
+Step 10: 20                  <
+Step 11: 10                  <
+Step 12: 5                   <
+Step 13: 16                  <
+Step 14: 8                   <
+Step 15: 4                   <
+Step 16: 2                   <
+Step 17: 1                   <
+returned: 17                   returned: 17
+--- Line Differences ---
+EXPECT:   3) Step 1: 7
+EXPECT:   4) Step 2: 22
+EXPECT:   5) Step 3: 11
+EXPECT:   6) Step 4: 34
+EXPECT:   7) Step 5: 17
+EXPECT:   8) Step 6: 52
+EXPECT:   9) Step 7: 26
+EXPECT:  10) Step 8: 13
+EXPECT:  11) Step 9: 40
+EXPECT:  12) Step 10: 20
+EXPECT:  13) Step 11: 10
+EXPECT:  14) Step 12: 5
+EXPECT:  15) Step 13: 16
+EXPECT:  16) Step 14: 8
+EXPECT:  17) Step 15: 4
+EXPECT:  18) Step 16: 2
+EXPECT:  19) Step 17: 1
+
+----------------------------------------
 
 (E) Compile based on Changes
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -250,6 +394,13 @@ PROBLEM 1: Compile and Run via make
   | 
   | > make                          # intentional repeat
   `----
+
+Answer:
+	The first command clears everything that is already compled so we can start fresh. The first make builds te program, and the second attempts to do the same thing,
+	but Make sees that no changes have been made and tells you that the already compiled binary is up to date. Touch is then used to "modify" the collatz_funcs.c file,
+	and because of that make senses a change in the file and recompiles both it and any target that depends on it. Removing the collatz_main and then running make causes
+	the collatz_main target to be re-ran, as it's compiled binary was deleted. Then collatz_main.c is modified with touch, and make will recompile it and any target that
+	depends on it again. The final make command senses that all the binaries are up to date and doesn't compile anything new.
 
 
 PROBLEM 2: Create a `Makefile'
