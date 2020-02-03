@@ -1,0 +1,85 @@
+                           _________________
+
+                            HW 02 QUESTIONS
+                           _________________
+
+
+- Name: (FILL THIS in)
+- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+PROBLEM 1 `fork_report.c'
+=========================
+
+A
+~
+
+  Compile and run the program in `fork_report.c'. Run the program
+  several times. Show the output of a typical run below.
+
+
+B
+~
+
+  Is the output ordered or disordered with respect to the "I am
+  number..." statements? Why?
+
+
+C
+~
+
+  Add calls to the wait() or waitpid() function to ensure that the
+  output is ordered. Compile and rerun the code to ensure that your code
+  will enforce ordered output. Paste your completed code below.
+
+
+D
+~
+
+  How many parents and children are there in this program? What is their
+  arrangement? How are the parent process(es) numbered?
+
+
+PROBLEM 2 `run_child.c'
+=======================
+
+A
+~
+
+  Compile and run the program in `run_child.c'. Show it's output below.
+
+
+B
+~
+
+  Adjust the contents of the `child_argv[]' array. Try removing the "-l"
+  element, try adding on ".." prior to the final NULL, or make other
+  modifications INCLUDING for the 0th "ls" string.  Recompile and
+  describe whether the output has changed.
+
+
+C
+~
+
+  Change the child_cmd string from "ls" to be something else like "gcc"
+  or "cat". A good combination is "gcc" with the "--version" as the only
+  option in the child_argv array. Recompile and explain what happens
+  now.
+
+
+D
+~
+
+  Currently `run_child.c' does not reach the bottom statements.
+  ,----
+  |   printf("------------------\n");
+  |   printf("Child Finished\n");
+  `----
+  Correct this by doing the following:
+  - Fork a child process
+  - Have ONLY the child process call execvp()
+  - Have the parent process wait() for the child
+  Paste your completed code below.
