@@ -11,6 +11,8 @@ int main(void) {
       break;
     }
   }
+  int status;
+  wait(&status);
   printf("I am number %d, my pid is %d\n",i,getpid());
   return 0;
 }

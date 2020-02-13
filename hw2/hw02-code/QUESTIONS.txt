@@ -4,8 +4,8 @@
                            _________________
 
 
-- Name: (FILL THIS in)
-- NetID: (THE kauf0095 IN kauf0095@umn.edu)
+- Name: Alex Biedny
+- NetID: biedn001
 
 Write your answers to the questions below directly in this text file.
 Submit the whole text file while taking the associated quiz.
@@ -20,6 +20,16 @@ A
   Compile and run the program in `fork_report.c'. Run the program
   several times. Show the output of a typical run below.
 
+abied@LAPTOP-E6H4COPE:/mnt/c/Users/abied/Documents/CSCI4061/hw2/hw02-code$ ./fork_report
+I am number 0, my pid is 4454
+I am number 1, my pid is 4455
+I am number 2, my pid is 4456
+I am number 3, my pid is 4457
+I am number 4, my pid is 4458
+I am number 5, my pid is 4459
+I am number 6, my pid is 4460
+I am number 8, my pid is 4453
+I am number 7, my pid is 4461
 
 B
 ~
@@ -27,6 +37,14 @@ B
   Is the output ordered or disordered with respect to the "I am
   number..." statements? Why?
 
+The output is ordered, but the last two numbered outputs are out of order
+(8 comes before 7). This is likely because when the for loop has the
+variable i=7, the last fork() call will happen. After that, the parent process
+will iterate once more in the loop, fail the i<8 check, and then drop down out
+of the loop and print "I am number 8...". At the same time, the child proces spawned
+when i=7 will be created, and then break out of the loop and print "I am number 7...".
+The statements are disordered because the parent process takes less time to iterate the loop
+once more and print it's statement than the child process does.
 
 C
 ~
@@ -35,12 +53,35 @@ C
   output is ordered. Compile and rerun the code to ensure that your code
   will enforce ordered output. Paste your completed code below.
 
+// fork_report.c: fork a child which reports its pid.
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+
+int main(void) {
+  int i;
+  for(i = 0; i<8; i++){
+    pid_t child = fork();
+    if(child == 0){
+      break;
+    }
+  }
+  int status;
+  wait(&status);
+  printf("I am number %d, my pid is %d\n",i,getpid());
+  return 0;
+}
 
 D
 ~
 
   How many parents and children are there in this program? What is their
   arrangement? How are the parent process(es) numbered?
+
+  There is only one parent, as none of the child processes ever make a call to fork().
+  They are arranged as one parent with 8 children. The parent process has the lowest system
+  PID as it was created first, but the number of the parent is the highest, as it doesn't
+  print it's number out until after spawning all of the children.
 
 
 PROBLEM 2 `run_child.c'
@@ -51,6 +92,17 @@ A
 
   Compile and run the program in `run_child.c'. Show it's output below.
 
+abied@LAPTOP-E6H4COPE:/mnt/c/Users/abied/Documents/CSCI4061/hw2/hw02-code$ ./run_child
+Running command 'ls'
+------------------
+total 32K
+drwxrwxrwx 1 abied abied  512 Feb  4 19:12 .
+drwxrwxrwx 1 abied abied  512 Feb  3 15:30 ..
+-rwxrwxrwx 1 abied abied 3.5K Feb  3 18:36 QUESTIONS.txt
+-rwxrwxrwx 1 abied abied 8.3K Feb  3 15:59 fork_report
+-rwxrwxrwx 1 abied abied  335 Feb  3 15:58 fork_report.c
+-rwxrwxrwx 1 abied abied 8.3K Feb  4 19:12 run_child
+-rwxrwxrwx 1 abied abied  477 Jan 28 17:16 run_child.c
 
 B
 ~
@@ -60,6 +112,9 @@ B
   modifications INCLUDING for the 0th "ls" string.  Recompile and
   describe whether the output has changed.
 
+The output changes based on the options in the child_argv[] array. The first member of the 
+array seems to not matter, as long as it is not null. The 2nd and onward arguments of the
+child_argv[] array act as arguments to the ls command in child_cmd.
 
 C
 ~
@@ -69,6 +124,8 @@ C
   option in the child_argv array. Recompile and explain what happens
   now.
 
+The child process runs the command in child_cmd, which was now changed to "gcc". It was ran with the
+argument "--version", which was the argument in the child_argv[] array.
 
 D
 ~
@@ -83,3 +140,26 @@ D
   - Have ONLY the child process call execvp()
   - Have the parent process wait() for the child
   Paste your completed code below.
+
+// run_child.c: run a child process. This version needs fixin'.
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+int main(void){
+  char *child_argv[] = {"","--version",NULL,NULL};
+  char *child_cmd = "gcc";
+  printf("Running command '%s'\n",child_cmd);
+  printf("------------------\n");
+
+  pid_t child = fork();
+  if (child == 0) {
+    execvp(child_cmd,child_argv);
+  }
+  int status;
+  wait(&status);
+  printf("------------------\n");
+  printf("Child Finished\n");         // show that the child process has finished
+  return 0;
+}

@@ -5,11 +5,17 @@
 #include <unistd.h>
 
 int main(void){
-  char *child_argv[] = {"ls","-l","-ah",NULL};
-  char *child_cmd = "ls";
+  char *child_argv[] = {"","--version",NULL,NULL};
+  char *child_cmd = "gcc";
   printf("Running command '%s'\n",child_cmd);
   printf("------------------\n");
-  execvp(child_cmd,child_argv);
+
+  pid_t child = fork();
+  if (child == 0) {
+    execvp(child_cmd,child_argv);
+  }
+  int status;
+  wait(&status);
   printf("------------------\n");
   printf("Child Finished\n");         // show that the child process has finished
   return 0;
