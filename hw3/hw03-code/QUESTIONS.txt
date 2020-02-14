@@ -353,6 +353,8 @@ A
   to longer strings.  Show your session and explain why read() always
   seems to read one more character than you type.
 
+When you type into the buffer and press enter, there is a newline characcter \n
+that is not shown at the end of every string that is input.
 
 B
 ~
@@ -364,6 +366,11 @@ B
     occupy?
   - what C function is used to alter its size? How does it work?
 
+The array initially has 4 bytes, which are allocated using malloc(). malloc() works by returning a memory address
+to an allocated block of memory the size you request. Then, if the input is more than the array size,
+it will read in as many characters as it can, then double the size of the array with
+a call to realloc(). realloc() works by allocating a different amount of memory at the address
+of the pointer passed in.
 
 C
 ~
@@ -377,6 +384,26 @@ C
   | > 123456
   `----
 
+Enter text. Press Ctrl-d to end input
+> 123456
+read 4 bytes
+input uses 4 of 4 allocated bytes
+total input is:
+-------
+1234-------
+wrote 4 bytes
+> read 3 bytes
+input uses 7 of 8 allocated bytes
+total input is:
+-------
+123456
+-------
+wrote 7 bytes
+> 
+
+read() will be called twice - once to read in the first 4 bytes of the input, 
+and then once more to read in the last 3 bytes after the array has been realloced to
+increase it in size.
 
 D
 ~
@@ -399,3 +426,7 @@ D
   Recompile the program and run it entering various inputs. Describe why
   this line is error and relate it to what the program now erroneously
   produces for output.
+
+The line will read every input into the buffer starting at the address in input, 
+so that every time read() is called, it will write in the buffer starting at index 0,
+rather than appending the read to the buffer as it should.

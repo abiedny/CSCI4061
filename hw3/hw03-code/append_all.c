@@ -22,8 +22,8 @@ int main(){
     }
 
     int max_read = max_size - cur_pos;                       // calculate maximum read size
-    int nread = read(STDIN_FILENO, input+cur_pos, max_read); // perform read()
- // int nread = read(STDIN_FILENO, input, max_read);         // this read() call would be an error: why?
+ //   int nread = read(STDIN_FILENO, input+cur_pos, max_read); // perform read()
+  int nread = read(STDIN_FILENO, input, max_read);         // this read() call would be an error: why?
     printf("read %d bytes\n",nread);
     
     if(nread == 0){                                          // 0 bytes read indicates end of file/input
