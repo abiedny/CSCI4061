@@ -1,0 +1,251 @@
+                           _________________
+
+                            HW 04 QUESTIONS
+                           _________________
+
+
+- Name: Alex Biedny
+- NetID: biedn001
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+PROBLEM 1 `parent_listen.c'
+===========================
+
+  `parent_listen.c' demonstrates setting up a parent to 'listen' output
+  that is write()'n to a pipe. Examine its contents carefully as it
+  demonstrates several new system calls including `pipe()' along with
+  the common error reporting function `perror()'.  Comments give some
+  indication of their use but some textbook or man-page reading will
+  give additional detail.
+
+
+A
+~
+
+  Compile and run the program in `parent_listen.c'. Show it's output
+  below.
+
+abied@DESKTOP-1GJPS2Q:/mnt/c/Users/abied/Documents/CSCI4061/hw4/hw04-code$ ./a.out
+0. Parent creating child process
+2. Parent read 17 bytes
+1. Child wrote 17 bytes
+3. Child said: 'Send $$$ please!'
+
+B
+~
+
+  Consider the call to `pipe()'. Do some research on Unix pipes to
+  figure out what a pipe does and explain in a few sentences.
+
+  A pipe uses internal OS memory to coordinate a way for different processes and programs
+  to transfer data to and from eachother. It specifies a place in OS memory where everyone with
+  access to the pipe can read from and write to.
+
+C
+~
+
+  Observe the calls to `read()' and `write()'. Their meaning should be
+  self-evident (read and write data) but the parameters to these
+  functions are interesting. Do some reading and explain the 3
+  parameters to each of them. Also explain their return value.
+
+  For read(), the first argument is the file descriptor of what to read from, the
+  second argument is the buffer to read the data into, and the third argument is the count
+  of how many bytes to read.
+  For write(), the arguments are the same: file descriptor to write to, buffer of what to
+  write, and how many bytes to write.
+
+D
+~
+
+  If you run the program a number of times, you may see output in
+  different orders: the parent may report reading the data before the
+  child has written it.  Data is `write()''n and `read()' from pipes
+  much faster than it can be put onto the screen. This in combination
+  with the unpredictable OS scheduler leads to output that can looks a
+  bit mixed up.
+
+  Adjust the position of the wait() call to guarantee that the order
+  that the messages are printed is always follows:
+  1. Parent creating child process
+  2. Child wrote 17 bytes
+  3. Parent read 17 bytes
+  4. Child said: 'Send $$$ please!'
+
+  Paste your full code below.
+
+// parent_listen.c: demonstrate use of pipe() to allow communication
+// between child and parent proceses.
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/wait.h>
+#include <errno.h>
+#include <string.h>
+
+#define PREAD 0                                       // index of read end of pipe
+#define PWRITE 1                                      // index of write end of pipe
+#define BUFSIZE 1024
+
+int main(int argc, char *argv[]) {
+
+  int par_child_pipe[2];                              // file descriptors for read/write ends of pipe
+  int pipe_result = pipe(par_child_pipe);             // create a pipe
+  if(pipe_result != 0) {                              // check that pipe creation succeeded
+    perror("Failed to create pipe");                  // report errors if pipe creation failed
+    exit(1);
+  }
+
+  printf("0. Parent creating child process\n");
+  pid_t child_pid = fork();                           // create a child process
+  if(child_pid < 0){                                  // check if fork failed
+    perror("Failed to fork");                         // report errors if forking failed
+    exit(1);
+  }
+                                                      // CHILD CODE
+  if(child_pid == 0){
+    char *msg = "Send $$$ please!";
+    int msg_len = strlen(msg)+1;               
+    int bytes_written =                               // capture how many bytes were written
+      write(par_child_pipe[PWRITE], msg, msg_len);    // write into write end of the pipe
+    printf("1. Child wrote %d bytes\n",bytes_written);
+    fflush(stdout);                                   // ensure that screen messages are printed
+
+    close(par_child_pipe[PWRITE]);                    // in child, close both ends of the pipe
+    close(par_child_pipe[PREAD]);
+    exit(0);                                          // child exits
+  }
+
+  // PARENT CODE
+  char buffer[BUFSIZE];                               // copy message into this array of chars
+  int bytes_read =                                    // read data from read end of pipe into buffer
+    read(par_child_pipe[PREAD], buffer, BUFSIZE);     // capture number of bytes read
+  close(par_child_pipe[PWRITE]);                      // in parent, close both ends of the pipe
+  close(par_child_pipe[PREAD]);
+  wait(NULL);
+  printf("2. Parent read %d bytes\n",bytes_read);
+  printf("3. Child said: '%s'\n",buffer);                                         // wait for the child to complete
+
+  return 0;
+}
+
+PROBLEM 2 `capture_stdout.c'
+============================
+
+A
+~
+
+  Compile and run the program in `capture_stdout.c'. Show its output.
+
+abied@DESKTOP-1GJPS2Q:/mnt/c/Users/abied/Documents/CSCI4061/hw4/hw04-code$ ./a.out
+Process 364 Piping
+364 Read from my_pipe
+364 Read: '364 In the pipe, five by five'
+
+B
+~
+
+  The calls `dup()' and `dup2()' are used in this program to manipulate
+  file descriptors. Explain the effects of the lines below. You may need
+  to consult a programming manual to learn more about `dup()' and
+  `dup2()'.
+  ,----
+  | int stdout_bak = dup(STDOUT_FILENO);
+  | dup2(my_pipe[PWRITE], STDOUT_FILENO);
+  | ...
+  | dup2(stdout_bak, STDOUT_FILENO);
+  `----
+
+  These lines first store the file descriptor refered to by STDOUT_FILENO in stdout_bak, a temp
+  variable, then use dup2() to make STDOUT_FILENO refer to the file descriptor at my_pipe[PWRITE].
+  The final line makes STDOUT_FILENO refer to the file descriptor in stdout_bak again, restoring
+  what it originally was.
+
+C
+~
+
+  The use of `printf()' normally puts output directly on the
+  screen. Explain why the statement
+  ,----
+  | printf("%d In the pipe, five by five",
+  |        getpid());           
+  | 
+  `----
+  does not print to screen as usual.
+
+Because the printf function writes to STDOUT_FILENO, and the file descriptor refered to by STDOUT_FILENO
+was changed to something else by usign dup2() before this printf() was called.
+
+D
+~
+
+  Modify the code so that the `In the pipe...' expression is printed by
+  a child process.
+  - Add a `fork()' AFTER `dup2()' redirects standard output but before
+    the print
+  - Add an `if()' to distinguish between parent and child
+  - The child should print then exit
+  - The parent should restore stdout then read from the pipe
+  - Add a `wait()' to guarantee the parent waits for the child to
+    complete prior to reading from the pipe
+  Paste your completed code below.
+
+// Redirect standard output temporarily to a pipe, then restore
+// standard output and retrieve the captured output
+#include <unistd.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <sys/wait.h>
+
+#define PREAD 0                            // index of read end of pipe
+#define PWRITE 1                           // index of write end of pipe
+
+int main(){
+  setvbuf(stdout, NULL, _IONBF, 0);        // Turn off I/O buffering, printf() occurs immediately
+
+  printf("Process %d Piping\n",getpid());
+  int my_pipe[2];
+  pipe(my_pipe);
+
+  int stdout_bak = dup(STDOUT_FILENO);     // Duplicate stdout so it can be restored later
+  dup2(my_pipe[PWRITE], STDOUT_FILENO);    // Redirect stdout to pipe
+
+  pid_t child_pid = fork();
+  if (child_pid == 0) {
+    printf("%d In the pipe, five by five",   // Should not show up on the screen
+          getpid());           
+    close(my_pipe[PWRITE]);
+    close(my_pipe[PREAD]);
+    exit(0);
+  }
+
+  dup2(stdout_bak, STDOUT_FILENO);         // Restore stdout: redirect to backed up fd
+  wait(NULL);
+  printf("%d Read from my_pipe\n",getpid());
+  char buf[2048];
+  int bytes_read = read(my_pipe[PREAD], buf, 2048);
+
+  buf[bytes_read] = '\0';                  // Not null-terminated by default, append '\0'
+  close(my_pipe[PREAD]);                   // Close read end
+  printf("%d Read: '%s'\n",getpid(),buf);  // Show earlier output
+  
+  return 0;
+}
+
+
+NOTE on Large Child Output
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  The completed `capture_stdout.c' file should get a child to write into
+  a pipe and the parent to read from that pipe. The parent reading is
+  currently reading as the lines
+  ,----
+  |   char buf[2048];
+  |   int bytes_read = read(my_pipe[PREAD], buf, 2048);
+  `----
+  assume that the child output will be no larger than 2048 bytes.  The
+  next problem demonstrates a useful allocation pattern which can be
+  used to handle large / unknown input sizes.
