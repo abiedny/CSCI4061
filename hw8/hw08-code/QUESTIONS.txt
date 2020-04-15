@@ -1,0 +1,217 @@
+                           _________________
+
+                            HW 08 QUESTIONS
+                           _________________
+
+
+- Name: Alex Biedny
+- NetID: biedn001
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+Overview
+========
+
+  UPDATE: Typing `make' will now create the subdirectory `subdir-small'
+  which is used in recursive traversals.
+
+  Compile and run the programs in the provide directory. A Makefile is
+  present to ease this task. After compiling, experiment with the
+  compiled programs as shown below and note the results they print.
+
+  ,----
+  | > make
+  | chmod u+x make-subdir-small.sh
+  | ./make-subdir-small.sh
+  | gcc -Wall -g -c nftw_listing.c
+  | gcc -Wall -g -c print_file_info.c
+  | gcc -Wall -g -o nftw_listing nftw_listing.o print_file_info.o
+  | gcc -Wall -g -c recursive_listing.c
+  | gcc -Wall -g -o recursive_listing recursive_listing.o print_file_info.o
+  | 
+  | > ./recursive_listing 
+  | T MTIME                    BYTES    FILENAME
+  | = ======================== ======== ================
+  | D Fri Mar 27 14:32:34 2020     4096 .
+  | F Thu Mar 26 14:29:47 2020    21912 ./nftw_demo
+  | ...
+  | 
+  | > ./recursive_listing recursive_listing.c
+  | ...
+  | 
+  | > ./recursive_listing subdir-small
+  | ...
+  | 
+  | > ./nftw_listing 
+  | ...
+  | > ./nftw_listing recursive_listing.c
+  | ...
+  | > ./nftw_listing subdir-small
+  | ...
+  `----
+
+  The bulk of this lab is to examine the provided code to determine how
+  library and system calls are used to carry out their task: listing the
+  contents of an entire directory hierarchy.
+
+
+PROBLEM 1: Recursive Directory Traversal
+========================================
+
+  Examine the code in `recursive_listing.c'. A number of system calls
+  are used within it which are worth studying.
+
+
+(A) lstat()
+~~~~~~~~~~~
+
+  Near the top, a call to `lstat()' is made. As the name implies, this
+  call is related to the `stat()' system call.  Describe what these two
+  do and how they differ. You man need to consult the manual page for
+  them which is obtained via `man 2 stat' (section 2 for system calls).
+
+A call to stat() will get some details about a file at a certain path.
+lstat() is identical, except if the file is a symbolic link, in which case stat()
+will follow it and report on the file, whereas lstat will report on the symbolic link.
+
+
+(B) opendir() / readdir()
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  Later in the code, the system calls `opendir() / readdir()' are
+  employed.  Describe what these system calls do and how they are
+  employed in the code. Also mention a set of files that should be
+  "ignored" and how this is accomplished.
+
+An opendir() call will open up a directory stream to the path that is passed in.
+The readdir() call takes the directory stream as an argument, and returns a dirent struct
+that contains information about the next directory entry. Two files that should be ignored in the
+directory are . and .., which is done in the code by a string comparison to the filename.
+
+
+(C) Base and Recursive Cases
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  As the name of the file and constituent functions implies,
+  `recursive_listing.c' takes a recursive approach. Some actions are
+  performed for all situations in `recursive_print()'. State these. Then
+  briefly describe what the Base and Recursive cases are for this code
+  are and how they work together to list all files in a directory tree.
+
+For all situations, recursive_print() will call lstat() to get, and then later print
+information about the file that was passed into it. Recursively, the base case occurs when 
+the passed in file is not another directory to recurse through. The recursive case occurs when the file
+passed in is a directory, in which case recursive_print() will be recursively called on that file.
+This has the effect of visiting every entry in the directory tree starting at the original input file.
+
+PROBLEM 2 Printing File Info
+============================
+
+  Examine the `print_file_info.c' file which contains the function used
+  in `recursive_listing.c' to print information on files.
+
+
+(A) File Kinds
+~~~~~~~~~~~~~~
+
+  Describe the technique that is used in `print_file_info()' to
+  determine the kind of file (regular, directory, symlink, etc.).
+  - Where is this information stored?
+  - How can one set a variable to a character like 'D' if the file is a
+    directory?
+
+  Note that there are two control mechanisms shown to demonstrate
+  determining file kinds, one is used while the other is commented. Both
+  work similarly.
+
+The st_mode entry in the stat struct that is passed in is passed to a series of macros,
+which return true if the file is of a certain type. It is stored as a character in
+a local variable named type.
+
+
+(B) Time Printing
+~~~~~~~~~~~~~~~~~
+
+  From our previous discussion of the `stat()' system call, recall that
+  it produces several pieces of time information about files. One of
+  these is the Last Modification Time (`mtime').  This field is stored
+  in a in `sb->st_mtime' but is in binary format.
+
+  What function is used to produce a human-readable version of `mtime'
+  and what is an annoyning "gotchya" associated with this formatting
+  function which is demonstrated `print_file_info()'?
+
+The ctime() function is use to convert mtime. The function will automatically append
+a trailing newline character, however.
+
+Problem 3: nftw() Library Call
+==============================
+
+  Coders have been known to "reinvent the wheel" at times, often due to
+  their being unaware of pre-established alternatives.  The code in
+  `recursive_listng.c' is simple enough but has a number of subtle
+  issues that can be crippling: what if it runs out of file descriptors?
+  how should it behave if the files in the directory are changing? what
+  if a different operation than print/total are desired?
+
+  To rectify these issues, most modern Unix systems have a library
+  function that performs a "File Tree Walk" recursively visiting every
+  file in a directory structure and allowing arbitrary actions to be
+  performed on it. One such function available on many Unixes is
+  `nftw()' with the `n' indicating a limit on the total file descriptors
+  used during the file tree walk.
+
+  This problem explores this interesting and useful function.
+
+
+(A) nftw_listing.c
+~~~~~~~~~~~~~~~~~~
+
+  Examine the `nftw_listing.c' program.  Describe the similarities and
+  differences you see in this program to `recursive_listing.c'.
+  Describe what you infer to be the purpose of the `nftw()' function.
+
+
+(B) Arguments to nftw()
+~~~~~~~~~~~~~~~~~~~~~~~
+
+  One extremely interesting aspect of the `nftw()' function is 2nd
+  argument.
+  - Describe what is unusual about this argument and relate it to how
+    the `print_file_info()' function is written.  You may wish to
+    consult `man nftw'.
+  - If one wanted to do something other than print file information
+    (such as just sum up the total files visited), how could one do this
+    with `nftw()'?
+
+The second argument accepts a function pointer that will return an int, and takes
+4 arguments, a file path, a stat struct, an int typeflag, and a ftw struct. This function
+will be called once for every entry in the directory tree.
+You could do many things with nftw, just by passing in a function pointer to a function
+written to take a tally or directory entries, or something else.
+
+
+Additional Information
+======================
+
+  Several alternatives to `nftw()' exist including the older `ftw()'
+  which is a simplified version of it.  Some systems (including Linux)
+  feature a `fts()' function which provides an interface similar to
+  `opendir() / readdir()' but which recursively visits an entire
+  directory tree rather than a single directory.
+
+  While C is not widely known for it Functional Programming facilities,
+  there are several places where functions are passed as arguments. The
+  C syntax for this is often confusing compared to functional languages
+  like Ocaml and Lisp, but it is usually worth the effort as
+  higher-order functions that take other functions as arguments can
+  provide tremendous flexibility.
+
+  Aside from `nftw()' taking a function to perform on files, a much more
+  common application of higher-order functions in C is the standard
+  `qsort()' (quick sort) function. It sorts arbitrary types of data
+  using a "comparison" function associated with the function. A
+  demonstration appears of this appears in `qsort_demo.c' and is worth
+  examining.

@@ -1,0 +1,165 @@
+                           _________________
+
+                            HW 09 QUESTIONS
+                           _________________
+
+
+- Name: Alex Biedny
+- NetID: biedn001
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+PROBLEM 1 `em_server.c'
+=======================
+
+A
+~
+
+  Examine the source code for `em_server.c'. Describe the
+  `requests.fifo' item that it creates.  Resolve theses specific items
+  1. What system call is used initially to delete any existing version
+     of `requests.fifo'?
+    A call to remove()
+  2. What system call is used to create `requests.fifo'?
+    A call to mkfifo()
+  3. What system call is used to set up reading from `requests.fifo'?
+    a call to open()
+
+
+B
+~
+
+  In the main `while()' loop of the server, describe how the server
+  handles requests from the client.
+  1. What C data type represents the requests from clients and what
+     parts does it have?
+      A struct named request_t, it has 2 character array fields to store
+      a query name and a client fifo name.
+  2. How does the server use the request data to search for a name/email
+     association?
+     It iterates over a double array and checks that the name matches, Then
+     you have the subarray containing both name and email.
+  3. How does the server use the request data to communicate back to the
+     client?
+     It opens the FIFO with the name that was sent with the request_t initially,
+     and then writes to the FIFO.
+
+
+PROBLEM 2 `em_client.c' and Protocol
+====================================
+
+A
+~
+
+  Examine the code for `em_client.c'. Describe the steps that it
+  performs to contact the server to make a request and then receive the
+  response.  Describe how system calls are used in this process.
+
+  To contact the server, the client makes a FIFO, stores the FIFO's name, and then
+  writes to the requests FIFO a request_t containing the reply FIFO and the query (argv[1]).
+  The response is received by then opening the client FIFO it created, and then reading it
+  into a string.
+
+  In this process, mkfifo() is used to create the FIFO the server will write its response to,
+  getpid() is used to name this FIFO, and open()/close() along with read() and write().
+
+B
+~
+
+  Describe the overall Protocol of communication of between the server
+  and client. Which entity is responsible for creating, reading, and
+  writing each FIFO at what time.
+
+  To contact the server, the client makes a FIFO, stores the FIFO's name, and then
+  writes to the requests FIFO a request_t containing the reply FIFO and the query (argv[1]).
+  The server then reads the request, uses the query to search a data structure, then writes 
+  a response to the FIFO provided by the client in the initial request. The response is received
+  by the client by then opening the client FIFO it created, and then reading it
+  into a string.
+
+C
+~
+
+  Use the provided script `run_simulation.sh <N>' to launch start a
+  server and run a specified number of clients such as 5 as below
+  ,----
+  | > ./run_simulation.sh 5
+  | SERVER 14205: starting up
+  | SERVER 14205: created new requests.fifo, now opening it
+  | SERVER 14205: opened requests.fifo, listening for requests
+  | CLIENT 14208: sending request: {fifo_file='14208.fifo' query_name='Christopher Jonathan' }
+  | CLIENT 14208: opening '14208.fifo'
+  | ...
+  | SERVER 14205: closing connection to fifo '14212.fifo'
+  | CLIENT 14211: response for name 'Dan Knights' is email 'knights@cs.umn.edu'
+  | CLIENT 14212: response for name 'George Karypis' is email 'karypis@cs.umn.edu'
+  | > 
+  `----
+  Examine the output for this run along with running the simulation
+  several more times with different numbers of clients.
+
+  Explain why there never seems to be any problem with multiple clients
+  overwriting data associated with each other particularly in the
+  `requests.fifo' and the client responses.
+
+  In the requests.fifo, the read and write pointers are all shared and managed by the OS, so nothing will
+  overwrite anything else.
+
+
+PROBLEM 3: Pitfalls
+===================
+
+A
+~
+
+  Compile the server/client with `make' and run the server via
+  ,----
+  | > ./em_server
+  `----
+  Note the output that it prints. Then kill the server, perhaps with a
+  C-c interrupt signal.
+
+  Edit the `em_server.c' code to use the line marked `ALTERNATE
+  OPEN'. You should comment on the preceding `open()' line to get
+  ,----
+  | // int requests_fd = open("requests.fifo", O_RDWR);               // open FIFO read/write to avoid blocking
+  | int requests_fd = open("requests.fifo", O_RDONLY);             // ALTERNATE OPEN: read only
+  `----
+
+  Recompile and re-run `em_server' and explain why the output of the
+  server changes in this case. To understand the change in output, you
+  may need to review what happens when a process opens only one end of a
+  pipe/FIFO.
+
+  Code will hang on opening a FIFO if it isn't opened for both reading and writing.
+
+B
+~
+
+  With the ALTERNATE OPEN line in use (uncommented), start the
+  `em_server' which should appear to be 'waiting' for something. Then in
+  a separate terminal, run `em_client'.  Describe if the client and
+  server behave differently than when the original `open()' line was in
+  use by the server.
+
+
+C
+~
+
+  With the ALTERNATE OPEN line in use (uncommented), run the
+  `run_simulation.sh 5' script a few times until it appears to stall and
+  fail to complete.
+
+  Examine the output of the simulation run carefully and find a line
+  involving the server that gives some hints as to why the simulation
+  fails. Show that line below.
+
+
+D
+~
+
+  Do some careful thinking, reading, and exploration and explain why the
+  ALTERNATE OPEN line creates a flaw in the server/client protocol that
+  is NOT present in the original version.
