@@ -1,0 +1,100 @@
+D seq 100000
+D gcc --version
+D du . -h
+D ls
+D ls -l
+D date
+D ls -li
+D gcc --help
+D date
+D wc jobs.txt
+D seq 100000
+D gcc --version
+D seq 50000
+D ls
+D ls -l
+D date
+D ls -li
+D wc jobs.txt
+D seq 100000
+D seq 50000
+D du . -h
+D ls
+D ls -l
+D date
+D ls -li
+D date
+D wc jobs.txt
+D seq 100000
+D seq 50000
+D du . -h
+D ls -l
+D date
+D ls -li
+D date
+D wc jobs.txt
+D seq 100000
+D gcc --version
+D seq 50000
+D du . -h
+D ls -l
+D ls -li
+D date
+D wc jobs.txt
+D seq 100000
+D gcc --version
+D seq 50000
+D du . -h
+D date
+D wc jobs.txt
+D seq 50000
+D seq 100000
+D gcc --version
+D du . -h
+D ls
+D ls -l
+D date
+D ls -li
+D gcc --help
+D date
+D wc jobs.txt
+D seq 100000
+D gcc --version
+D seq 50000
+D ls
+D ls -l
+D date
+D ls -li
+D wc jobs.txt
+D seq 100000
+D seq 50000
+D du . -h
+D ls
+D ls -l
+D date
+D ls -li
+D date
+D wc jobs.txt
+D seq 100000
+D seq 50000
+D du . -h
+D ls -l
+D date
+D ls -li
+D date
+D wc jobs.txt
+D seq 100000
+D gcc --version
+D seq 50000
+D du . -h
+D ls -l
+D ls -li
+D date
+D wc jobs.txt
+D seq 100000
+D gcc --version
+D seq 50000
+D du . -h
+D date
+D wc jobs.txt
+D seq 50000
