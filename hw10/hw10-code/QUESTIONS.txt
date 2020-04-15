@@ -1,0 +1,96 @@
+                           _________________
+
+                            HW 10 QUESTIONS
+                           _________________
+
+
+- Name: Alex Biedny
+- NetID: biedn001
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+PROBLEM 1 `em_server_mq.c' and `em_server_mq.c'
+===============================================
+
+  Examine the source code for `em_server_mq.c' and
+  `em_client_mq.c'. Compile and run these codes running the server in
+  one terminal with clients in another terminal. You may also try
+  `./run_simulation_mq.sh 100' which will start the server and 100
+  clients to communicate with it.
+
+
+A
+~
+
+  After gaining familiarity with the code, describe the lines of code
+  which are used to create POSIX Message Queues.
+  - What specific system calls are used to create/access message queues?
+  - Which of the server/clients create message queues?
+  - How does this compare to the previous FIFO version in the code pack?
+
+
+B
+~
+
+  Describe the sending and receiving functions used in the server/client
+  to interact with message queues.
+  - What arguments are required for the sending function?
+  - What arguments are required for the receiving function?
+  - Does the same data type of message go from client to server as from
+    server to client?
+  - What are the equivalent send/receive functions in the FIFO version
+    of the server?
+
+
+C
+~
+
+  Overall, contrast the protocol and architecture of the POSIX Message
+  Queue version of the server/client with the FIFO version studied in
+  last week's lab.  Are there any major similarities or difference
+  between these two?
+
+
+PROBLEM 2: The Faulty Server
+============================
+
+  Examine the provided `faulty_em_server.c' and `faulty_em_client.c'
+  which use POSIX Message Queues for communication.  Compile these via
+  `make' and run the server in a terminal with clients in another
+  terminal. This should appear to work normally. However,
+  `./run_simulation_faulty.sh 100' which will launch the server with 100
+  clients will report errors. This problem determines why.
+
+
+A
+~
+
+  Examine the architecture for communication that is used between
+  `faulty_em_server.c' and `faulty_em_client.c'.
+  - How many message queues are there?
+  - What appears to be the protocol for communication?
+
+
+B
+~
+
+  Run the "simulation" script for the faulty server and examine the
+  results.
+  ,----
+  | > ./run_simulation_faulty.sh 100
+  `----
+  To ease the analysis, the script gives clients the expected email
+  associated with each name and the client verifies if it gets the
+  correct email or reports and ERROR.
+
+  For small runs such as with 10 clients, there may be no errors but for
+  larger runs like 100 there are always errors.
+
+  - Construct an argument as to why the protocol used in this version is
+    "faulty" as the name suggests.
+  - Is this issue specific to Message Queues or would FIFOs have similar
+    problems with the faulty protocol?
+  - What concurrency issues are present that are not a problem in the
+    previous message queue/FIFO versions of the server/client?
