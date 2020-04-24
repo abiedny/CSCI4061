@@ -1,0 +1,61 @@
+Q1. 
+
+Message queues are much more appropriate for this application because they are meant to carry arbitrary data, like messages. Signals on the other hand
+can only deliver a limited amount of information to a process, namely the signal number. In addition, while signals are delivered nearly instantly,
+they are alos delivered asynchronously, which means a signal can interrupt a programs normal execution. Message queues can be sent to and
+read from by a call to mq_send() and mq_receive() respectively, which would allow the messaging program to have much more control over when
+it wants to receive messages. Finally, using signals would require much more work, as a handler for every single type of signal would have to be written
+and assigned to handle a certain signal using a call to signal() or sigaction(). As signals are received asynchronously, there would also need to be
+a mechanism to maintain the order that signals arrived to the program in order to be able to receive any data that makes sense. Message queues
+eliminate all of this by allowing you to send arbitrary sequences of bits, read them at any time, and maintain the order of all data.
+
+Q2.
+
+First, he could use a memory mapped file and calculate the offset needed to read plants 9 and 221. Such a call would look like this:
+ptr = mmap(NULL, size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0)
+Then the variable ptr is a reference to the start of the file, and you can calculate an offset for the pointer such as
+offset = sizeof(planet_t)*n, where n is the index of the planet you wish to access.
+Second, he could also use lseek to move the position in the file and not repeatedly call read(). This would entail first opening the file
+with open(), and getting the file descriptor. Then, use that file descriptor in something like this call to lseek:
+lseek(fd, sizeof(planet_t)*n, SEEK_CUR)
+again where n is the desired index to read. You would then be at the index in the file right before planet n, so you could simply read in
+one planet, call lseek again, and retreieve all the data you want.
+
+Q3.
+
+This is happening because of lseek and simultaneous writes. If two instances of the program are running at once, they will both eventually call
+lseek to set the file pointer to the end of the file. But if two processes call lseek and get pointers to the end of the file at around the same 
+time, they will both write to the same place, and whichever process writes last will overwrite the other, causing data loss.
+
+Q3.2.
+
+I used a semaphore to protect the critical regions of the code, namely operations in lines 32-39 in the modified code (sem_wait() to sem_post()). This makes it so that before lseek is called or any data is written, all process except one are locked out of the file. That one process is then guaranteed an accurate lseek call, and that the end of file will not change before this process can write to it. After it is done writing, it frees the semaphore so that other processes can continue.
+
+Q4.
+
+Between the time when sscanf() is called to read the print job line in and when that status is changed to in progress, another process of this code
+may have also sscanf()'ed in the print job line, resulting in two calls to teh send_to_printer() function and multiple copies of the job.
+
+Q4.1.
+
+I again used semaphores to lock the print job file in between the time when the process reads a line, and when it changes the line status. By doing this, no other processes can access the print jobs file until the process writes a status update to the file, preventing duplicates.
+
+Q5.
+
+I would rely on message queues to do most of the work for this. By creating a central message queue to act as the print queue, any number of
+processes could push data to it using mq_send(). The different printers could easily multitask by having the printing process call
+mq_receive() to "pop" a message from the queue and printing it. There would be no need to worry about safety, as the message queue is a queue,
+and once a piece of data is received from it, it is removed from the message queue. In addition, you could utilize the waiting feature of mq_receive()
+to have the printqueue_print processes simply loop back around and wait until more jobs are available after printing one, rather than shutting
+down at the end of a file.
+
+Q6.
+
+If one process calls sem_wait(battery_lock) and the other calls sem_wait(solarpan_lock) (or vice versa) before the other process can call
+sem_wait() on the other semaphore, there will be deadlock, as both processes will be waiting for resources that the other has.
+
+This can be fixed simply by using one semaphore instead of multiple. The only time in the code where having two semaphores may be
+advantageous is on line 7, where the solar panels are not locked if the battery is high enough. The improvement in performance that this
+configuration gives is negligible, and changing to one semaphore would only cause the solar panels to be locked for the time of one
+function, battery_level(), more than before. This fix could be implemented by removing lines 8, 13, 22, 26, and 3. The battery_lock
+semaphore should also then be renamed to more accurately reflect its new purpose.

@@ -27,9 +27,19 @@ A
   After gaining familiarity with the code, describe the lines of code
   which are used to create POSIX Message Queues.
   - What specific system calls are used to create/access message queues?
-  - Which of the server/clients create message queues?
-  - How does this compare to the previous FIFO version in the code pack?
+	Message queues are created with a call to mq_open(). In this function you
+	specify the name, flags and permissions, and a mq_attr struct that has other
+	options for this message queue.
+	To access the message queue, mq_receive() is called, which writes the oldest entry in
+	a message queue to a buffer, or will block if the message queue is empty.
 
+  - Which of the server/clients create message queues?
+	Both the server and every client create a message queue, the server has one to recieve requests on,
+	and the clients create and send a handle to the message queue to the server so it can respond with that queue.
+
+  - How does this compare to the previous FIFO version in the code pack?
+	It is very simillar to the FIFO version, really the main difference is the use of message queues instead
+	of FIFO's.
 
 B
 ~
@@ -37,12 +47,15 @@ B
   Describe the sending and receiving functions used in the server/client
   to interact with message queues.
   - What arguments are required for the sending function?
+	mq_send() takes 4 arguments, a message queue descriptor, a buffer of what to send, the size of what to send from the buffer, and a priority int.
   - What arguments are required for the receiving function?
+	mq_receive() takes 4 arguments, a message queue descriptor, a buffer to read the message into, the size of what to read, and a priority int.
   - Does the same data type of message go from client to server as from
     server to client?
+	Internally, they are all character pointers, but functionally the client sends a request_t, and the server responds with a string.
   - What are the equivalent send/receive functions in the FIFO version
     of the server?
-
+	The FIFO version just uses read() and write()
 
 C
 ~
@@ -51,7 +64,8 @@ C
   Queue version of the server/client with the FIFO version studied in
   last week's lab.  Are there any major similarities or difference
   between these two?
-
+	Besides the different system calls and slightly different setups, the two programs
+	act functionally the same.
 
 PROBLEM 2: The Faulty Server
 ============================
@@ -70,8 +84,10 @@ A
   Examine the architecture for communication that is used between
   `faulty_em_server.c' and `faulty_em_client.c'.
   - How many message queues are there?
+	There are only two, both opened and created in the server.
   - What appears to be the protocol for communication?
-
+	The client makes a request like normal, and then listens for a reply on a
+	global reply message queue, instead of a client specific queue.
 
 B
 ~
@@ -90,7 +106,10 @@ B
 
   - Construct an argument as to why the protocol used in this version is
     "faulty" as the name suggests.
+	Because there is only one message queue for the server to send replies to many clients.
   - Is this issue specific to Message Queues or would FIFOs have similar
     problems with the faulty protocol?
+	FIFO's would have simmilar problems.
   - What concurrency issues are present that are not a problem in the
     previous message queue/FIFO versions of the server/client?
+	In this version, it is possible for a client to read a response from the response queue that is not intended for that client.

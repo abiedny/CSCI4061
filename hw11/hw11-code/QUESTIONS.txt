@@ -1,0 +1,160 @@
+                           _________________
+
+                            HW 11 QUESTIONS
+                           _________________
+
+
+- Name: Alex Biedny
+- NetID: biedn001
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+PROBLEM 1: The Setup
+====================
+
+A
+~
+
+  Compile and run `worm_pthread.c' using the provided Makefile. Make
+  sure to follow the program prompts.  Describe what you observe.
+
+  There is a display of "worms" formed by letters with capital letters at their head. The worms move around a grid, and make 50
+  steps before they complete. By making steps they capture points on the grid.
+
+
+B
+~
+
+  Examine the code and describe the types data associated with each of
+  the following elements in the program.
+  - The "board" which has several pieces of data
+	As expected, the board is a 2D array of characters. There is also a mutex for each space of the 2D grid.
+  - The "worms" which have several pieces of data
+	There is a worm_t type, which contains data about the worm character, the delay between moves, the current location of the worm, 
+	the number of steps it has taken, and the number of cells it has as territory. There is also an array of worm_t's of all the active worms.
+
+
+C
+~
+
+  Describe the area of code in `main()' which creates threads and awaits
+  them finishing.
+  - Describe the function which is used to start a thread running and
+    its arguments. Consult the manual for documentation on this function
+    if needed.
+	The pthread_create() function is used. It's arguments are a pointer to a pthread_t, a pointer to a thread attributes struct (NULL here),
+	a function pointer to a startup routine that the thread will run, and finally the argument to the startup routine.
+  - Describe the function which is used to wait until a thread finishes.
+	The pthread_join() function is used. It's arguments are the pthread_t thread to wait on, and a pointer to a buffer where the return value of the thread's
+	startup routine will go.
+
+
+PROBLEM 2: The Worms
+====================
+
+A
+~
+
+  Examine the `worm_func()' function carefully.  You may wish to
+  consider the specific data passed to these worms which are in the
+  array of `wormparam_t' structs near the top of the source code.
+
+  Describe the basic algorithm that worms follow to do their work.
+
+  The worm is placed on the board based on its initial row and col values. It then selects a random "move" out of up, down, left, and right to attempt. If that move is not
+  possible, it iterates over those possible moves until it finds one that works. Then it mutex locks the square it will move to, checks if it is available to move to, and 
+  if it is available the worm will move to that square, and then mutex unlock. If it is not available, it mutex unlocks the square and tries to find a move again. It then sleeps
+  based on the worm's delay, and loops around again.
+    
+
+B
+~
+
+  Describe how worms avoid both claiming the same piece of
+  territory. What system call mechanism is used to ensure that two worms
+  cannot claim the same area of the board? Describe the function calls
+  that are used to accomplish this and what functions in `main()' are
+  used to set up this coordination mechanism.
+
+  When a worm wants to claim a square, it mutex locks that specific square, then checks if it is already claimed, and claims it if it is not, While the square is locked, other threads
+  cannot access it. This is done via a call to pthread_mutex_lock(), where the argument is the mutex to lock. Unlocking works similarily.
+
+  In main(), the pthread_mutex_init() function is used to initialize the 2D array of pthread_mutex_t's that correspond to each block in the board array.
+
+C
+~
+
+  Describe the logic that appears to cause worms to be 'fast' and
+  'slow': how is this artificial speed actually created in the
+  `worm_func()' code.
+  
+  The "speed" of worms is determined by how often they will make a step, as each worm has a delay variable that is eventually passed to usleep(), pausing different threads
+  for different amounts of time.
+
+  While the speed differences of worms is an intended creation of the
+  program, speculate as to what use threads can be when dealing with
+  entities of different speeds.
+
+  Threads can be used to offload large amounts of work, parallelize things, and make things run faster if used correctly.
+
+
+Optional: The Printer
+=====================
+
+  The printing thread runs `print_func()'. This does not introduce any
+  new concurrency techniques. However it does use some special display
+  tricks, printing extremely strange output like
+  ,----
+  |   printf("\33[s");              // save cursor position
+  |   printf("\33[?25l");           // hide cursor to avoid flicker
+  |   printf("\33[u");              // restore cursor position
+  `----
+  This type of output also appears in some other places in the program.
+  The strange looking characters are special sequences for *terminal
+  control*. The program interpreting output can be manipulated in
+  various ways to change the cursor position, color of text, and so
+  forth.  This is an extremely old set of conventions that harkens back
+  to a day when these special sequences would physically manipulate
+  aspects of the machine in which they appeared.  Modern "terminal
+  emulators" such as Gnome Terminal or XTerm which show a command line
+  honor these conventions making it possible for programs to display
+  information in the same position as is done here or take over the
+  entire screen of the terminal such as vi and gdb do.
+
+  Discussion of terminal control is beyond the scope of our course but
+  does receive some treatment in Stevens/Rago and elsewhere.  You can
+  read more about the history and insanity of terminal control and the
+  escape sequences that give some control over them in
+  [https://en.wikipedia.org/wiki/ANSI_escape_code]
+
+  To program a more fully-featured terminal program, use a robust
+  terminal control library such as ncurses.
+  [https://en.wikipedia.org/wiki/Ncurses] This library is used in the
+  below Python version of the worms program.
+
+
+Optional Enrichment: Threads in Python
+======================================
+
+  Threads are not unique to C and the Pthreads library. Most modern
+  programming environments include some version of them. The prototype
+  version of the worms program was written in Python and can be found in
+  `worms.py' and can be run via
+  ,----
+  | > ./worms.py
+  `----
+  - No territory or step numbers are tracked in the Python version; it
+    runs until Ctrl-c is pressed
+  - This version does not use a memory mapped file instead showing the
+    board on the console.
+  - The `curses' library is used to manipulate the terminal screen which
+    allows for boxes and color to be used but complicates the
+    implementation somewhat.
+  - Python features several types of mutual exclusion locks including
+    one used here that can be re-locked by the same thread without
+    negative effects.
+
+  Time permitting, explore the code of `worms.py' and draw some
+  parallels as to the C code.
