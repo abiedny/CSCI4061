@@ -113,6 +113,8 @@ int server_broadcast(server_t *server, mesg_t *mesg) {
 // Makes use of the poll() system call to efficiently determine
 // which sources are ready.
 void server_check_sources(server_t *server) {
+    printf("Checking sources...\n");
+    fflush(stdout);
     struct pollfd pfds[server->n_clients + 1];
     for (int i = 0; i < server->n_clients; i++) {
         pfds[i].fd = server->client[i].to_server_fd;
@@ -123,12 +125,22 @@ void server_check_sources(server_t *server) {
     pfds[server->n_clients].events = POLLIN;
 
     poll(pfds, server->n_clients + 1, -1); //THIS WILL BLOCK until data ready
+    printf("Poll exited\n");
+    fflush(stdout);
 
     //revent field is nonzero if an event happened
     for (int j = 0; j < server->n_clients; j++) {
-        if (pfds[j].revents & POLLIN) server->client[j].data_ready = 1;
+        if (pfds[j].revents & POLLIN) {
+            server->client[j].data_ready = 1;
+            printf("Data ready at client %i\n", j);
+            fflush(stdout);
+        }
     }
-    if (pfds[server->n_clients].revents & POLLIN) server->join_ready = 1;
+    if (pfds[server->n_clients].revents & POLLIN) {
+        server->join_ready = 1;
+        printf("Join ready");
+        fflush(stdout);
+    }
 }
 
 // Return the join_ready flag from the server which indicates whether
@@ -141,6 +153,8 @@ int server_join_ready(server_t *server) {
 // join request and add the new client to the server. After finishing,
 // set the servers join_ready flag to 0.
 int server_handle_join(server_t *server) {
+    printf("handing join...");
+    fflush(stdout);
     join_t newJoin;
     int nread = read(server->join_fd, &newJoin, sizeof(join_t));
     server_add_client(server, &newJoin);
@@ -166,6 +180,8 @@ int server_client_ready(server_t *server, int idx) {
 // ADVANCED: Update the last_contact_time of the client to the current
 // server time_sec.
 int server_handle_client(server_t *server, int idx) {
+    printf("handling client...");
+    fflush(stdout);
     mesg_t newMesg;
     int nread = read(server->client[idx].to_server_fd, &newMesg, sizeof(mesg_t));
     if (newMesg.kind == BL_MESG || newMesg.kind == BL_DEPARTED) server_broadcast(server, &newMesg);
