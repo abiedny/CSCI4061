@@ -46,13 +46,13 @@ void *server_thread_func(void *null) {
         read(from_fifo_fd, &rec, sizeof(mesg_t));
         //if shutdown received, cancel user thread and then this
         if (rec.kind == BL_SHUTDOWN) {
-            iprintf(&simpio, "!!! Server is shutting down !!!");
+            iprintf(&simpio, "!!! Server is shutting down !!!\n");
             break;
         }
         //print with simpio
         else if (rec.kind == BL_MESG) iprintf(&simpio, "[%s] : %s\n", rec.name, rec.body);
-        else if (rec.kind == BL_JOINED) iprintf(&simpio, "-- %s JOINED --", rec.name);
-        else if (rec.kind == BL_DEPARTED) iprintf(&simpio, "-- %s DEPARTED --", rec.name);
+        else if (rec.kind == BL_JOINED) iprintf(&simpio, "-- %s JOINED --\n", rec.name);
+        else if (rec.kind == BL_DEPARTED) iprintf(&simpio, "-- %s DEPARTED --\n", rec.name);
     }
     //cancel user thread before you go
     pthread_cancel(user_thread);
@@ -61,7 +61,7 @@ void *server_thread_func(void *null) {
 
 int main(int argc, char *argv[]) {
     if (argc < 3) {
-        printf("Provide a server and a client name...");
+        printf("Provide a server and a client name...\n");
         exit(0);
     }
 
