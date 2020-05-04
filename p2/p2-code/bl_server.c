@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     my_sa.sa_handler = sig_handler; // run function handle_SIGINT
     sigaction(SIGINT,  &my_sa, NULL); // register SIGINT with given action
     my_sa.sa_handler = alarm_handler; // run function handle_SIGINT
-    sigaction(SIGINT,  &my_sa, NULL); // register SIGINT with given action
+    sigaction(SIGALRM,  &my_sa, NULL); // register SIGINT with given action
 
     memset(&server, '\0', sizeof(server_t));
     server_start(&server, argv[1], DEFAULT_PERMS);

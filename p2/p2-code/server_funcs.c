@@ -211,7 +211,7 @@ void server_ping_clients(server_t *server) {
     memset(&ping, '\0', sizeof(mesg_t));
     ping.kind = BL_PING;
     strcpy(ping.name, "PING");
-    server_broadcast(&server, ping);
+    server_broadcast(server, &ping);
 }
 
 // ADVANCED: Check all clients to see if they have contacted the
@@ -229,8 +229,8 @@ void server_remove_disconnected(server_t *server, int disconnect_secs) {
             memset(&dc, '\0', sizeof(mesg_t));
             dc.kind = BL_DISCONNECTED;
             strcpy(dc.name, server->client[i].name);
-            server_remove_client(&server, i);
-            server_broadcast(&server, &dc); //broadcast dc message
+            server_remove_client(server, i);
+            server_broadcast(server, &dc); //broadcast dc message
             i--; //this spot in server->clients will be reassigned with server_remove_client, so adjust loop
         } 
     }
