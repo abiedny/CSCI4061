@@ -26,6 +26,7 @@ void server_start(server_t *server, char *server_name, int perms) {
     mkfifo(fifo_name, perms);
     server->join_fd = open(fifo_name, O_RDWR);
     strcpy(server->server_name, server_name);
+    server->time_sec = 0;
 
     //Log feature 
     //server->log_fd = open(sprintf("%s.log", server_name), O_RDWR | O_CREAT);
@@ -194,17 +195,25 @@ int server_handle_client(server_t *server, int idx) {
     mesg_t newMesg;
     int nread = read(server->client[idx].to_server_fd, &newMesg, sizeof(mesg_t));
     if (newMesg.kind == BL_MESG || newMesg.kind == BL_DEPARTED) server_broadcast(server, &newMesg);
+    server->client[idx].last_contact_time = server->time_sec; //update last contact time
     server->client[idx].data_ready = 0;
     return nread;
 }
 
-void server_tick(server_t *server);
 // ADVANCED: Increment the time for the server
+void server_tick(server_t *server) {
+    server->time_sec++;
+}
 
-void server_ping_clients(server_t *server);
 // ADVANCED: Ping all clients in the server by broadcasting a ping.
+void server_ping_clients(server_t *server) {
+    mesg_t ping;
+    memset(&ping, '\0', sizeof(mesg_t));
+    ping.kind = BL_PING;
+    strcpy(ping.name, "PING");
+    server_broadcast(&server, ping);
+}
 
-void server_remove_disconnected(server_t *server, int disconnect_secs);
 // ADVANCED: Check all clients to see if they have contacted the
 // server recently. Any client with a last_contact_time field equal to
 // or greater than the parameter disconnect_secs should be
@@ -212,6 +221,20 @@ void server_remove_disconnected(server_t *server, int disconnect_secs);
 // clients.  Process clients from lowest to highest and take care of
 // loop indexing as clients may be removed during the loop
 // necessitating index adjustments.
+void server_remove_disconnected(server_t *server, int disconnect_secs) {
+    for (int i = 0; i < server->n_clients; i++) {
+        if ( (server->time_sec - server->client[i].last_contact_time) > disconnect_secs ) {
+            //client is dc'ed
+            mesg_t dc;
+            memset(&dc, '\0', sizeof(mesg_t));
+            dc.kind = BL_DISCONNECTED;
+            strcpy(dc.name, server->client[i].name);
+            server_remove_client(&server, i);
+            server_broadcast(&server, &dc); //broadcast dc message
+            i--; //this spot in server->clients will be reassigned with server_remove_client, so adjust loop
+        } 
+    }
+}
 
 void server_write_who(server_t *server);
 // ADVANCED: Write the current set of clients logged into the server

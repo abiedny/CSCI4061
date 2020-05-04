@@ -52,6 +52,14 @@ void *server_thread_func(void *null) {
             iprintf(&simpio, "!!! server is shutting down !!!\n");
             break;
         }
+        else if (rec.kind == BL_PING) {
+            //respond with a ping
+            mesg_t ping;
+            memset(&ping, '\0', sizeof(mesg_t));
+            ping.kind = BL_PING;
+            strcpy(ping.name, name);
+            write(to_fifo_fd, &ping, sizeof(mesg_t));
+        }
         //print with simpio
         else if (rec.kind == BL_MESG) iprintf(&simpio, "[%s] : %s\n", rec.name, rec.body);
         else if (rec.kind == BL_JOINED) iprintf(&simpio, "-- %s JOINED --\n", rec.name);
