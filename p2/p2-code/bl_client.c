@@ -22,6 +22,7 @@ void *user_thread_func(void *null) {
         if (simpio.line_ready) {
             //if line ready, create mesg_t and write to to_server fifo
             mesg_t mesg;
+            memset(&mesg, '\0', sizeof(mesg_t));
             mesg.kind = BL_MESG;
             strcpy(mesg.name, name);
             strcpy(mesg.body, simpio.buf);
@@ -29,13 +30,14 @@ void *user_thread_func(void *null) {
         }
         if (simpio.end_of_input) {
             //if end of input, write departed to server and kill user thread
+            pthread_cancel(server_thread);
             mesg_t bye;
+            memset(&bye, '\0', sizeof(mesg_t));
             bye.kind = BL_DEPARTED;
             strcpy(bye.name, name);
             write(to_fifo_fd, &bye, sizeof(mesg_t));
         }
     }
-    pthread_cancel(server_thread);
     return NULL;
 }
 
@@ -43,6 +45,7 @@ void *server_thread_func(void *null) {
     while(1) {
         //read mesg_t from to_client fifo
         mesg_t rec;
+        memset(&rec, '\0', sizeof(mesg_t));
         read(from_fifo_fd, &rec, sizeof(mesg_t));
         //if shutdown received, cancel user thread and then this
         if (rec.kind == BL_SHUTDOWN) {
@@ -65,9 +68,17 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
+    //global inits
+    memset(to_fifo_name, '\0', MAXNAME);
+    memset(from_fifo_name, '\0', MAXNAME);
+    memset(name, '\0', MAXNAME);
+    memset(&simpio, '\0', sizeof(simpio_t));
+
     //names
     char server[MAXNAME];
+    memset(server, '\0', MAXNAME);
     char client[MAXNAME];
+    memset(client, '\0', MAXNAME);
     sprintf(server, "%s.fifo", argv[1]);
     sprintf(client, "%s>>", argv[2]);
     strcpy(name, argv[2]);
@@ -87,6 +98,7 @@ int main(int argc, char *argv[]) {
 
     //join request
     join_t req;
+    memset(&req, '\0', sizeof(join_t));
     strcpy(req.name, name);
     strcpy(req.to_client_fname, from_fifo_name);
     strcpy(req.to_server_fname, to_fifo_name);

@@ -21,6 +21,7 @@ int main(int argc, char *argv[]) {
     sigaction(SIGINT,  &my_sa, NULL); // register SIGINT with given action
 
     server_t server;
+    memset(&server, '\0', sizeof(server_t));
     server_start(&server, argv[1], DEFAULT_PERMS);
     printf("Server \"%s\" started up...\n", argv[1]);
     while(!signalled) {

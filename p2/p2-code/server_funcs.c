@@ -19,6 +19,8 @@ client_t *server_get_client(server_t *server, int idx) {
 // control access to the who_t portion of the log.
 void server_start(server_t *server, char *server_name, int perms) {
     char fifo_name[MAXNAME];
+    memset(fifo_name, '\0', MAXNAME);
+
     sprintf(fifo_name, "%s.fifo", server_name);
     remove(fifo_name);
     mkfifo(fifo_name, perms);
@@ -114,6 +116,8 @@ void server_check_sources(server_t *server) {
     printf("Checking sources...\n");
     fflush(stdout);
     struct pollfd pfds[server->n_clients + 1];
+    memset(&pfds, '\0', sizeof(pfds[server->n_clients + 1]));
+
     for (int i = 0; i < server->n_clients; i++) {
         pfds[i].fd = server->client[i].to_server_fd;
         pfds[i].events = POLLIN;
