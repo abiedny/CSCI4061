@@ -1,0 +1,47 @@
+==12759== Memcheck, a memory error detector
+==12759== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==12759== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==12759== Command: ../bl_client test-06-serv Clark
+==12759== 
+==12759== Syscall param write(buf) points to uninitialised byte(s)
+==12759==    at 0x4E4D281: write (write.c:27)
+==12759==    by 0x109209: main (bl_client.c:95)
+==12759==  Address 0x1ffeffecc6 is on thread 1's stack
+==12759==  in frame #1, created by main (bl_client.c:62)
+==12759== 
+-- Clark JOINED --
+[Bruce] : Hey big guy
+[Bruce] : What's happen'?
+Clark>>Not much, how about you?==12759== Thread 2:
+==12759== Syscall param write(buf) points to uninitialised byte(s)
+==12759==    at 0x4E4D2B7: write (write.c:27)
+==12759==    by 0x108E3B: user_thread_func (bl_client.c:28)
+==12759==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==12759==    by 0x517C88E: clone (clone.S:95)
+==12759==  Address 0x5c4b9ea is on thread 2's stack
+==12759==  in frame #1, created by user_thread_func (bl_client.c:14)
+==12759== 
+[Clark] : Not much, how about you?
+[Bruce] : Hangin' out...
+[Bruce] : In the BATCAVE
+[Clark] : I figured...
+[Clark] : I'm out
+Clark>>==12759== Syscall param write(buf) points to uninitialised byte(s)
+==12759==    at 0x4E4D2B7: write (write.c:27)
+==12759==    by 0x108E85: user_thread_func (bl_client.c:35)
+==12759==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==12759==    by 0x517C88E: clone (clone.S:95)
+==12759==  Address 0x5c4b9ea is on thread 2's stack
+==12759==  in frame #1, created by user_thread_func (bl_client.c:14)
+==12759== 
+-- Clark DEPARTED --
+Clark>>==12759== 
+==12759== HEAP SUMMARY:
+==12759==     in use at exit: 0 bytes in 0 blocks
+==12759==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==12759== 
+==12759== All heap blocks were freed -- no leaks are possible
+==12759== 
+==12759== For counts of detected and suppressed errors, rerun with: -v
+==12759== Use --track-origins=yes to see where uninitialised values come from
+==12759== ERROR SUMMARY: 5 errors from 3 contexts (suppressed: 0 from 0)

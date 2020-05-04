@@ -1,0 +1,46 @@
+==13422== Memcheck, a memory error detector
+==13422== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==13422== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==13422== Command: ../bl_client test-15-serv Clark2
+==13422== 
+==13422== Syscall param write(buf) points to uninitialised byte(s)
+==13422==    at 0x4E4D281: write (write.c:27)
+==13422==    by 0x109209: main (bl_client.c:95)
+==13422==  Address 0x1ffeffecc7 is on thread 1's stack
+==13422==  in frame #1, created by main (bl_client.c:62)
+==13422== 
+-- Clark2 JOINED --
+Clark2>>Yup - super hearing==13422== Thread 2:
+==13422== Syscall param write(buf) points to uninitialised byte(s)
+==13422==    at 0x4E4D2B7: write (write.c:27)
+==13422==    by 0x108E3B: user_thread_func (bl_client.c:28)
+==13422==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==13422==    by 0x517C88E: clone (clone.S:95)
+==13422==  Address 0x5c4b9eb is on thread 2's stack
+==13422==  in frame #1, created by user_thread_func (bl_client.c:14)
+==13422== 
+[Clark2] : Yup - super hearing
+-- Lois1 DEPARTED --
+[Clark2] : Fortress of solitude
+-- Bruce3 JOINED --
+[Bruce3] : From the shadows!
+[Bruce3] : Kryptonite!
+Clark2>>==13422== Syscall param write(buf) points to uninitialised byte(s)
+==13422==    at 0x4E4D2B7: write (write.c:27)
+==13422==    by 0x108E85: user_thread_func (bl_client.c:35)
+==13422==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==13422==    by 0x517C88E: clone (clone.S:95)
+==13422==  Address 0x5c4b9eb is on thread 2's stack
+==13422==  in frame #1, created by user_thread_func (bl_client.c:14)
+==13422== 
+-- Clark2 DEPARTED --
+Clark2>>==13422== 
+==13422== HEAP SUMMARY:
+==13422==     in use at exit: 0 bytes in 0 blocks
+==13422==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==13422== 
+==13422== All heap blocks were freed -- no leaks are possible
+==13422== 
+==13422== For counts of detected and suppressed errors, rerun with: -v
+==13422== Use --track-origins=yes to see where uninitialised values come from
+==13422== ERROR SUMMARY: 4 errors from 3 contexts (suppressed: 0 from 0)

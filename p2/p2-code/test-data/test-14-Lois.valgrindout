@@ -1,0 +1,48 @@
+==13301== Memcheck, a memory error detector
+==13301== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==13301== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==13301== Command: ../bl_client test-14-serv Lois
+==13301== 
+==13301== Syscall param write(buf) points to uninitialised byte(s)
+==13301==    at 0x4E4D281: write (write.c:27)
+==13301==    by 0x109209: main (bl_client.c:95)
+==13301==  Address 0x1ffeffecd5 is on thread 1's stack
+==13301==  in frame #1, created by main (bl_client.c:62)
+==13301== 
+-- Lois JOINED --
+[Bruce] : Batman!
+[Clark] : Superman!
+Lois>>Not again==13301== Thread 2:
+==13301== Syscall param write(buf) points to uninitialised byte(s)
+==13301==    at 0x4E4D2B7: write (write.c:27)
+==13301==    by 0x108E3B: user_thread_func (bl_client.c:28)
+==13301==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==13301==    by 0x517C88E: clone (clone.S:95)
+==13301==  Address 0x5c4b9e9 is on thread 2's stack
+==13301==  in frame #1, created by user_thread_func (bl_client.c:14)
+==13301== 
+[Lois] : Not again
+[Bruce] : Vanish!
+-- Bruce DEPARTED --
+[Clark] : He he
+[Lois] : Lame
+[Clark] : Yup
+Lois>>==13301== Syscall param write(buf) points to uninitialised byte(s)
+==13301==    at 0x4E4D2B7: write (write.c:27)
+==13301==    by 0x108E85: user_thread_func (bl_client.c:35)
+==13301==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==13301==    by 0x517C88E: clone (clone.S:95)
+==13301==  Address 0x5c4b9e9 is on thread 2's stack
+==13301==  in frame #1, created by user_thread_func (bl_client.c:14)
+==13301== 
+-- Lois DEPARTED --
+Lois>>==13301== 
+==13301== HEAP SUMMARY:
+==13301==     in use at exit: 0 bytes in 0 blocks
+==13301==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==13301== 
+==13301== All heap blocks were freed -- no leaks are possible
+==13301== 
+==13301== For counts of detected and suppressed errors, rerun with: -v
+==13301== Use --track-origins=yes to see where uninitialised values come from
+==13301== ERROR SUMMARY: 4 errors from 3 contexts (suppressed: 0 from 0)

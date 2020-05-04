@@ -1,0 +1,58 @@
+==13852== Memcheck, a memory error detector
+==13852== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==13852== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==13852== Command: ../bl_client test-20-serv D
+==13852== 
+==13852== Syscall param write(buf) points to uninitialised byte(s)
+==13852==    at 0x4E4D281: write (write.c:27)
+==13852==    by 0x109209: main (bl_client.c:95)
+==13852==  Address 0x1ffeffecd2 is on thread 1's stack
+==13852==  in frame #1, created by main (bl_client.c:62)
+==13852== 
+-- D JOINED --
+-- E JOINED --
+[A] : 5
+D>>6==13852== Thread 2:
+==13852== Syscall param write(buf) points to uninitialised byte(s)
+==13852==    at 0x4E4D2B7: write (write.c:27)
+==13852==    by 0x108E3B: user_thread_func (bl_client.c:28)
+==13852==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==13852==    by 0x517C88E: clone (clone.S:95)
+==13852==  Address 0x5c4b9e6 is on thread 2's stack
+==13852==  in frame #1, created by user_thread_func (bl_client.c:14)
+==13852== 
+[D] : 6
+[E] : 7
+[C] : 8
+-- F JOINED --
+-- G JOINED --
+-- H JOINED --
+[A] : 9
+[D] : 10
+[E] : 11
+[C] : 12
+[B] : 13
+-- C DEPARTED --
+[F] : 14
+[G] : 15
+[D] : 16
+[E] : 17
+[B] : 18
+D>>==13852== Syscall param write(buf) points to uninitialised byte(s)
+==13852==    at 0x4E4D2B7: write (write.c:27)
+==13852==    by 0x108E85: user_thread_func (bl_client.c:35)
+==13852==    by 0x4E436DA: start_thread (pthread_create.c:463)
+==13852==    by 0x517C88E: clone (clone.S:95)
+==13852==  Address 0x5c4b9e6 is on thread 2's stack
+==13852==  in frame #1, created by user_thread_func (bl_client.c:14)
+==13852== 
+==13852== 
+==13852== HEAP SUMMARY:
+==13852==     in use at exit: 0 bytes in 0 blocks
+==13852==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==13852== 
+==13852== All heap blocks were freed -- no leaks are possible
+==13852== 
+==13852== For counts of detected and suppressed errors, rerun with: -v
+==13852== Use --track-origins=yes to see where uninitialised values come from
+==13852== ERROR SUMMARY: 5 errors from 3 contexts (suppressed: 0 from 0)

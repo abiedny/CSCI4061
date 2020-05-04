@@ -1,0 +1,13 @@
+-- Clark JOINED --											-- Clark JOINED --
+[Bruce] : Hello												[Bruce] : Hello
+[Clark] : Yo												[Clark] : Yo
+[Bruce] : bye												[Bruce] : bye
+-- Bruce DEPARTED --											-- Bruce DEPARTED --
+[Clark] : Ugh												[Clark] : Ugh
+-- Bruce JOINED --											-- Bruce JOINED --
+[Bruce] : back												[Bruce] : back
+[Clark] : great												[Clark] : great
+[Clark] : gone												[Clark] : gone
+[Bruce] : ack												[Bruce] : ack
+												      >	-- Clark DEPARTED --
+Clark>>													Clark>>

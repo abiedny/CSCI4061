@@ -1,0 +1,36 @@
+-- D JOINED --												-- D JOINED --
+-- E JOINED --												-- E JOINED --
+[A] : 5													[A] : 5
+[D] : 6													[D] : 6
+[E] : 7													[E] : 7
+[C] : 8													[C] : 8
+-- F JOINED --												-- F JOINED --
+-- G JOINED --												-- G JOINED --
+-- H JOINED --												-- H JOINED --
+[A] : 9													[A] : 9
+[D] : 10												[D] : 10
+[E] : 11												[E] : 11
+[C] : 12												[C] : 12
+[B] : 13												[B] : 13
+-- C DEPARTED --											-- C DEPARTED --
+[F] : 14												[F] : 14
+[G] : 15												[G] : 15
+[D] : 16												[D] : 16
+[E] : 17												[E] : 17
+[B] : 18												[B] : 18
+												      >	-- D DEPARTED --
+D>> 													D>>
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
+												      (
