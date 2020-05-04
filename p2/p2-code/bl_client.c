@@ -45,9 +45,14 @@ void *server_thread_func(void *null) {
         mesg_t rec;
         read(from_fifo_fd, &rec, sizeof(mesg_t));
         //if shutdown received, cancel user thread and then this
-        if (rec.kind == BL_SHUTDOWN) break;
+        if (rec.kind == BL_SHUTDOWN) {
+            iprintf(&simpio, "!!! Server is shutting down !!!");
+            break;
+        }
         //print with simpio
-        iprintf(&simpio, "[%s] : %s\n", rec.name, rec.body);
+        else if (rec.kind == BL_MESG) iprintf(&simpio, "[%s] : %s\n", rec.name, rec.body);
+        else if (rec.kind == BL_JOINED) iprintf(&simpio, "-- %s JOINED --", rec.name);
+        else if (rec.kind == BL_DEPARTED) iprintf(&simpio, "-- %s DEPARTED --", rec.name);
     }
     //cancel user thread before you go
     pthread_cancel(user_thread);
@@ -65,6 +70,7 @@ int main(int argc, char *argv[]) {
     char client[MAXNAME];
     sprintf(server, "%s.fifo", argv[1]);
     sprintf(client, "%s>>", argv[2]);
+    strcpy(name, argv[2]);
 
     //init io
     simpio_set_prompt(&simpio, client); // set the prompt

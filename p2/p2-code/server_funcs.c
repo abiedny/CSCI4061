@@ -58,8 +58,6 @@ int server_add_client(server_t *server, join_t *join) {
     client_t newClient;
     strcpy(join->name, newClient.name); //join name to new client
 
-    //TODO: Do we create the to/from FIFOs here as well?
-
     //to client fd and name saved
     strcpy(newClient.to_client_fname, join->to_client_fname);
     newClient.to_client_fd = open(join->to_client_fname, O_RDWR);
@@ -158,6 +156,11 @@ int server_handle_join(server_t *server) {
     join_t newJoin;
     int nread = read(server->join_fd, &newJoin, sizeof(join_t));
     server_add_client(server, &newJoin);
+
+    mesg_t joined;
+    joined.kind = BL_JOINED;
+    strcpy(joined.name, newJoin.name);
+    server_broadcast(server, &joined);
     server->join_ready = 0;
 
     return nread;
