@@ -56,7 +56,7 @@ int server_add_client(server_t *server, join_t *join) {
     if (server->n_clients == MAXCLIENTS) return 1;
 
     client_t newClient;
-    strcpy(join->name, newClient.name); //join name to new client
+    strcpy(newClient.name, join->name); //join name to new client
 
     //to client fd and name saved
     strcpy(newClient.to_client_fname, join->to_client_fname);

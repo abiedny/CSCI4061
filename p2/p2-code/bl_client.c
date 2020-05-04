@@ -87,7 +87,7 @@ int main(int argc, char *argv[]) {
 
     //join request
     join_t req;
-    strcpy(req.name, client);
+    strcpy(req.name, name);
     strcpy(req.to_client_fname, from_fifo_name);
     strcpy(req.to_server_fname, to_fifo_name);
     //and then make the request
