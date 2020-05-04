@@ -1,25 +1,10 @@
-==12929== Memcheck, a memory error detector
-==12929== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==12929== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==12929== Command: ../bl_client test-09-serv Clark
-==12929== 
-==12929== Syscall param write(buf) points to uninitialised byte(s)
-==12929==    at 0x4E4D281: write (write.c:27)
-==12929==    by 0x109209: main (bl_client.c:95)
-==12929==  Address 0x1ffeffecc6 is on thread 1's stack
-==12929==  in frame #1, created by main (bl_client.c:62)
-==12929== 
+==15662== Memcheck, a memory error detector
+==15662== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==15662== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==15662== Command: ../bl_client test-09-serv Clark
+==15662== 
 -- Clark JOINED --
 [Bruce] : Hello
-Clark>>Yo==12929== Thread 2:
-==12929== Syscall param write(buf) points to uninitialised byte(s)
-==12929==    at 0x4E4D2B7: write (write.c:27)
-==12929==    by 0x108E3B: user_thread_func (bl_client.c:28)
-==12929==    by 0x4E436DA: start_thread (pthread_create.c:463)
-==12929==    by 0x517C88E: clone (clone.S:95)
-==12929==  Address 0x5c4b9ea is on thread 2's stack
-==12929==  in frame #1, created by user_thread_func (bl_client.c:14)
-==12929== 
 [Clark] : Yo
 [Bruce] : bye
 [Clark] : No
@@ -32,21 +17,12 @@ Clark>>Yo==12929== Thread 2:
 [Clark] : Ugh
 [Clark] : Ugh
 [Clark] : sigh..
-Clark>>==12929== Syscall param write(buf) points to uninitialised byte(s)
-==12929==    at 0x4E4D2B7: write (write.c:27)
-==12929==    by 0x108E85: user_thread_func (bl_client.c:35)
-==12929==    by 0x4E436DA: start_thread (pthread_create.c:463)
-==12929==    by 0x517C88E: clone (clone.S:95)
-==12929==  Address 0x5c4b9ea is on thread 2's stack
-==12929==  in frame #1, created by user_thread_func (bl_client.c:14)
-==12929== 
-==12929== 
-==12929== HEAP SUMMARY:
-==12929==     in use at exit: 0 bytes in 0 blocks
-==12929==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
-==12929== 
-==12929== All heap blocks were freed -- no leaks are possible
-==12929== 
-==12929== For counts of detected and suppressed errors, rerun with: -v
-==12929== Use --track-origins=yes to see where uninitialised values come from
-==12929== ERROR SUMMARY: 8 errors from 3 contexts (suppressed: 0 from 0)
+Clark>>==15662== 
+==15662== HEAP SUMMARY:
+==15662==     in use at exit: 0 bytes in 0 blocks
+==15662==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==15662== 
+==15662== All heap blocks were freed -- no leaks are possible
+==15662== 
+==15662== For counts of detected and suppressed errors, rerun with: -v
+==15662== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

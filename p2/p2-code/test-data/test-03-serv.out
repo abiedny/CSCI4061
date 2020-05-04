@@ -1,5 +1,29 @@
 Server "test-03-serv" started up...
 Main loop...s
 Checking sources...
+Poll exited
+Join readyhanding join...Main loop...e
+Main loop...s
+Checking sources...
+Poll exited
+Data ready at client 0
+handling client...Main loop...e
+Main loop...s
+Checking sources...
+Poll exited
+Data ready at client 0
+handling client...Main loop...e
+Main loop...s
+Checking sources...
+Poll exited
+Data ready at client 0
+handling client...Main loop...e
+Main loop...s
+Checking sources...
+Poll exited
+Data ready at client 0
+handling client...Main loop...e
+Main loop...s
+Checking sources...
 Signalled, shutting down...Poll exited
 Main loop...e

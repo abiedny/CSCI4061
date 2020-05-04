@@ -49,7 +49,7 @@ void *server_thread_func(void *null) {
         read(from_fifo_fd, &rec, sizeof(mesg_t));
         //if shutdown received, cancel user thread and then this
         if (rec.kind == BL_SHUTDOWN) {
-            iprintf(&simpio, "!!! Server is shutting down !!!\n");
+            iprintf(&simpio, "!!! server is shutting down !!!\n");
             break;
         }
         //print with simpio

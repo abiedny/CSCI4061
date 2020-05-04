@@ -1,100 +1,18 @@
-==13265== Memcheck, a memory error detector
-==13265== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==13265== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==13265== Command: ../bl_server test-14-serv
-==13265== 
+==16025== Memcheck, a memory error detector
+==16025== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==16025== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==16025== Command: ../bl_server test-14-serv
+==16025== 
 Server "test-14-serv" started up...
 Main loop...s
 Checking sources...
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x10939E: server_check_sources (server_funcs.c:117)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x1093BB: server_check_sources (server_funcs.c:122)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x1093CF: server_check_sources (server_funcs.c:123)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x1093F5: server_check_sources (server_funcs.c:125)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Syscall param poll(ufds) contains uninitialised byte(s)
-==13265==    at 0x4F50BC4: poll (poll.c:29)
-==13265==    by 0x1093F9: server_check_sources (server_funcs.c:125)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Syscall param poll(nfds) contains uninitialised byte(s)
-==13265==    at 0x4F50BC4: poll (poll.c:29)
-==13265==    by 0x1093F9: server_check_sources (server_funcs.c:125)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x4F50BCC: poll (poll.c:43)
-==13265==    by 0x1093F9: server_check_sources (server_funcs.c:125)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
 Poll exited
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x10948A: server_check_sources (server_funcs.c:130)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x10949D: server_check_sources (server_funcs.c:137)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-Join readyhanding join...==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x108F49: server_add_client (server_funcs.c:56)
-==13265==    by 0x109595: server_handle_join (server_funcs.c:158)
-==13265==    by 0x108CB2: main (bl_server.c:30)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x109044: server_add_client (server_funcs.c:73)
-==13265==    by 0x109595: server_handle_join (server_funcs.c:158)
-==13265==    by 0x108CB2: main (bl_server.c:30)
-==13265== 
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x10928F: server_broadcast (server_funcs.c:102)
-==13265==    by 0x1095D5: server_handle_join (server_funcs.c:163)
-==13265==    by 0x108CB2: main (bl_server.c:30)
-==13265== 
-==13265== Syscall param write(buf) points to uninitialised byte(s)
-==13265==    at 0x4F4C154: write (write.c:27)
-==13265==    by 0x10927D: server_broadcast (server_funcs.c:103)
-==13265==    by 0x1095D5: server_handle_join (server_funcs.c:163)
-==13265==    by 0x108CB2: main (bl_server.c:30)
-==13265==  Address 0x1ffef3d4ca is on thread 1's stack
-==13265==  in frame #2, created by server_handle_join (server_funcs.c:153)
-==13265== 
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x108D04: main (bl_server.c:31)
-==13265== 
-Main loop...e
+Join readyhanding join...Main loop...e
 Main loop...s
 Checking sources...
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x109379: server_check_sources (server_funcs.c:118)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x109386: server_check_sources (server_funcs.c:119)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
 Poll exited
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x109428: server_check_sources (server_funcs.c:131)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
 Data ready at client 0
-handling client...==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x10928F: server_broadcast (server_funcs.c:102)
-==13265==    by 0x1096DD: server_handle_client (server_funcs.c:190)
-==13265==    by 0x108CF0: main (bl_server.c:32)
-==13265== 
-Main loop...e
+handling client...Main loop...e
 Main loop...s
 Checking sources...
 Poll exited
@@ -170,78 +88,14 @@ Data ready at client 0
 handling client...Main loop...e
 Main loop...s
 Checking sources...
-==13265== Use of uninitialised value of size 8
-==13265==    at 0x4F50C31: poll (poll.c:29)
-==13265==    by 0x1093F9: server_check_sources (server_funcs.c:125)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
 Signalled, shutting down...Poll exited
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x109433: server_check_sources (server_funcs.c:131)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x1094A8: server_check_sources (server_funcs.c:137)
-==13265==    by 0x108C90: main (bl_server.c:29)
-==13265== 
 Main loop...e
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x10928F: server_broadcast (server_funcs.c:102)
-==13265==    by 0x108EB8: server_shutdown (server_funcs.c:43)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265== 
-==13265== Syscall param write(buf) points to uninitialised byte(s)
-==13265==    at 0x4F4C154: write (write.c:27)
-==13265==    by 0x10927D: server_broadcast (server_funcs.c:103)
-==13265==    by 0x108EB8: server_shutdown (server_funcs.c:43)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265==  Address 0x1ffef3e0d4 is on thread 1's stack
-==13265==  in frame #2, created by server_shutdown (server_funcs.c:38)
-==13265== 
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x108EF6: server_shutdown (server_funcs.c:44)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265== 
-==13265== Conditional jump or move depends on uninitialised value(s)
-==13265==    at 0x109229: server_remove_client (server_funcs.c:89)
-==13265==    by 0x108EDB: server_shutdown (server_funcs.c:45)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265== 
-==13265== Syscall param close(fd) contains uninitialised byte(s)
-==13265==    at 0x4F4C8D4: close (close.c:27)
-==13265==    by 0x1090EC: server_remove_client (server_funcs.c:84)
-==13265==    by 0x108EDB: server_shutdown (server_funcs.c:45)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265== 
-==13265== Syscall param close(fd) contains uninitialised byte(s)
-==13265==    at 0x4F4C8D4: close (close.c:27)
-==13265==    by 0x10910E: server_remove_client (server_funcs.c:85)
-==13265==    by 0x108EDB: server_shutdown (server_funcs.c:45)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265== 
-==13265== Syscall param unlink(pathname) points to uninitialised byte(s)
-==13265==    at 0x4F4DD47: unlink (syscall-template.S:78)
-==13265==    by 0x109134: server_remove_client (server_funcs.c:86)
-==13265==    by 0x108EDB: server_shutdown (server_funcs.c:45)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265==  Address 0x1ffef406e4 is on thread 1's stack
-==13265==  in frame #3, created by main (bl_server.c:9)
-==13265== 
-==13265== Syscall param unlink(pathname) points to uninitialised byte(s)
-==13265==    at 0x4F4DD47: unlink (syscall-template.S:78)
-==13265==    by 0x10915A: server_remove_client (server_funcs.c:87)
-==13265==    by 0x108EDB: server_shutdown (server_funcs.c:45)
-==13265==    by 0x108D3D: main (bl_server.c:37)
-==13265==  Address 0x1ffef40ae4 is on thread 1's stack
-==13265==  in frame #3, created by main (bl_server.c:9)
-==13265== 
-==13265== 
-==13265== HEAP SUMMARY:
-==13265==     in use at exit: 0 bytes in 0 blocks
-==13265==   total heap usage: 1 allocs, 1 frees, 8,192 bytes allocated
-==13265== 
-==13265== All heap blocks were freed -- no leaks are possible
-==13265== 
-==13265== For counts of detected and suppressed errors, rerun with: -v
-==13265== Use --track-origins=yes to see where uninitialised values come from
-==13265== ERROR SUMMARY: 548 errors from 29 contexts (suppressed: 0 from 0)
+==16025== 
+==16025== HEAP SUMMARY:
+==16025==     in use at exit: 0 bytes in 0 blocks
+==16025==   total heap usage: 1 allocs, 1 frees, 8,192 bytes allocated
+==16025== 
+==16025== All heap blocks were freed -- no leaks are possible
+==16025== 
+==16025== For counts of detected and suppressed errors, rerun with: -v
+==16025== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

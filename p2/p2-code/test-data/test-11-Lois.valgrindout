@@ -1,33 +1,16 @@
-==13080== Memcheck, a memory error detector
-==13080== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==13080== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==13080== Command: ../bl_client test-11-serv Lois
-==13080== 
-==13080== Syscall param write(buf) points to uninitialised byte(s)
-==13080==    at 0x4E4D281: write (write.c:27)
-==13080==    by 0x109209: main (bl_client.c:95)
-==13080==  Address 0x1ffeffecd5 is on thread 1's stack
-==13080==  in frame #1, created by main (bl_client.c:62)
-==13080== 
+==15844== Memcheck, a memory error detector
+==15844== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==15844== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==15844== Command: ../bl_client test-11-serv Lois
+==15844== 
 -- Lois JOINED --
 -- Bruce DEPARTED --
-Lois>>==13080== Thread 2:
-==13080== Syscall param write(buf) points to uninitialised byte(s)
-==13080==    at 0x4E4D2B7: write (write.c:27)
-==13080==    by 0x108E85: user_thread_func (bl_client.c:35)
-==13080==    by 0x4E436DA: start_thread (pthread_create.c:463)
-==13080==    by 0x517C88E: clone (clone.S:95)
-==13080==  Address 0x5c4b9e9 is on thread 2's stack
-==13080==  in frame #1, created by user_thread_func (bl_client.c:14)
-==13080== 
--- Lois DEPARTED --
-Lois>>==13080== 
-==13080== HEAP SUMMARY:
-==13080==     in use at exit: 0 bytes in 0 blocks
-==13080==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
-==13080== 
-==13080== All heap blocks were freed -- no leaks are possible
-==13080== 
-==13080== For counts of detected and suppressed errors, rerun with: -v
-==13080== Use --track-origins=yes to see where uninitialised values come from
-==13080== ERROR SUMMARY: 2 errors from 2 contexts (suppressed: 0 from 0)
+Lois>>==15844== 
+==15844== HEAP SUMMARY:
+==15844==     in use at exit: 0 bytes in 0 blocks
+==15844==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==15844== 
+==15844== All heap blocks were freed -- no leaks are possible
+==15844== 
+==15844== For counts of detected and suppressed errors, rerun with: -v
+==15844== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)

@@ -41,6 +41,7 @@ void server_shutdown(server_t *server) {
     close(server->join_fd);
     unlink(server->server_name);
     mesg_t shutdown;
+    memset(&shutdown, '\0', sizeof(mesg_t));
     shutdown.kind = BL_SHUTDOWN;
     server_broadcast(server, &shutdown);
     for(int i = 0; i < server->n_clients; i++) {
@@ -116,7 +117,7 @@ void server_check_sources(server_t *server) {
     printf("Checking sources...\n");
     fflush(stdout);
     struct pollfd pfds[server->n_clients + 1];
-    memset(&pfds, '\0', sizeof(pfds[server->n_clients + 1]));
+    memset(pfds, '\0', sizeof(struct pollfd) * (server->n_clients + 1));
 
     for (int i = 0; i < server->n_clients; i++) {
         pfds[i].fd = server->client[i].to_server_fd;
@@ -162,6 +163,7 @@ int server_handle_join(server_t *server) {
     server_add_client(server, &newJoin);
 
     mesg_t joined;
+    memset(&joined, '\0', sizeof(mesg_t));
     joined.kind = BL_JOINED;
     strcpy(joined.name, newJoin.name);
     server_broadcast(server, &joined);

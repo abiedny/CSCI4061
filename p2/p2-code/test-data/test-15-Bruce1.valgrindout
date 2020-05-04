@@ -1,42 +1,17 @@
-==13368== Memcheck, a memory error detector
-==13368== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
-==13368== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
-==13368== Command: ../bl_client test-15-serv Bruce1
-==13368== 
-==13368== Syscall param write(buf) points to uninitialised byte(s)
-==13368==    at 0x4E4D281: write (write.c:27)
-==13368==    by 0x109209: main (bl_client.c:95)
-==13368==  Address 0x1ffeffecc7 is on thread 1's stack
-==13368==  in frame #1, created by main (bl_client.c:62)
-==13368== 
+==16131== Memcheck, a memory error detector
+==16131== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==16131== Using Valgrind-3.13.0 and LibVEX; rerun with -h for copyright info
+==16131== Command: ../bl_client test-15-serv Bruce1
+==16131== 
 -- Bruce1 JOINED --
-Bruce1>>Batman!==13368== Thread 2:
-==13368== Syscall param write(buf) points to uninitialised byte(s)
-==13368==    at 0x4E4D2B7: write (write.c:27)
-==13368==    by 0x108E3B: user_thread_func (bl_client.c:28)
-==13368==    by 0x4E436DA: start_thread (pthread_create.c:463)
-==13368==    by 0x517C88E: clone (clone.S:95)
-==13368==  Address 0x5c4b9eb is on thread 2's stack
-==13368==  in frame #1, created by user_thread_func (bl_client.c:14)
-==13368== 
 [Bruce1] : Batman!
 [Clark1] : Superman!
-Bruce1>>==13368== Syscall param write(buf) points to uninitialised byte(s)
-==13368==    at 0x4E4D2B7: write (write.c:27)
-==13368==    by 0x108E85: user_thread_func (bl_client.c:35)
-==13368==    by 0x4E436DA: start_thread (pthread_create.c:463)
-==13368==    by 0x517C88E: clone (clone.S:95)
-==13368==  Address 0x5c4b9eb is on thread 2's stack
-==13368==  in frame #1, created by user_thread_func (bl_client.c:14)
-==13368== 
--- Bruce1 DEPARTED --
-Bruce1>>==13368== 
-==13368== HEAP SUMMARY:
-==13368==     in use at exit: 0 bytes in 0 blocks
-==13368==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
-==13368== 
-==13368== All heap blocks were freed -- no leaks are possible
-==13368== 
-==13368== For counts of detected and suppressed errors, rerun with: -v
-==13368== Use --track-origins=yes to see where uninitialised values come from
-==13368== ERROR SUMMARY: 3 errors from 3 contexts (suppressed: 0 from 0)
+Bruce1>>==16131== 
+==16131== HEAP SUMMARY:
+==16131==     in use at exit: 0 bytes in 0 blocks
+==16131==   total heap usage: 8 allocs, 8 frees, 6,334 bytes allocated
+==16131== 
+==16131== All heap blocks were freed -- no leaks are possible
+==16131== 
+==16131== For counts of detected and suppressed errors, rerun with: -v
+==16131== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
