@@ -10,6 +10,8 @@ void sig_handler(int sig_num) {
 
 int ticked = 0;
 void alarm_handler(int sig_num) {
+    printf("ALARMED");
+    fflush(stdout);
     ticked = 1;
     alarm(1);
 }
@@ -43,6 +45,8 @@ int main(int argc, char *argv[]) {
         fflush(stdout);
         if (ticked) {
             ticked = 0;
+            printf("ALARM RESET");
+            fflush(stdout);
             server_tick(&server);
             server_remove_disconnected(&server, 10);
         }
