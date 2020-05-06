@@ -70,7 +70,8 @@ int server_add_client(server_t *server, join_t *join) {
     strcpy(newClient.to_server_fname, join->to_server_fname);
     newClient.to_server_fd = open(join->to_server_fname, O_RDWR);
 
-    //initialize data_ready
+    //initialize data_ready and contact time
+    newClient.last_contact_time = -1;
     newClient.data_ready = 0;
 
     //push client to client array, increment counter
@@ -224,7 +225,7 @@ void server_ping_clients(server_t *server) {
 // necessitating index adjustments.
 void server_remove_disconnected(server_t *server, int disconnect_secs) {
     for (int i = 0; i < server->n_clients; i++) {
-        printf("Servertime %i - Clienttime %i > dc secs %i\n", server->time_sec, server->client[i].last_contact_time, disconnect_secs);
+        //printf("Servertime %i - Clienttime %i > dc secs %i\n", server->time_sec, server->client[i].last_contact_time, disconnect_secs);
         if ( (server->time_sec - server->client[i].last_contact_time) > disconnect_secs ) {
             //client is dc'ed
             printf("CLIENT DC'ed\n");
@@ -234,7 +235,7 @@ void server_remove_disconnected(server_t *server, int disconnect_secs) {
             strcpy(dc.name, server->client[i].name);
             server_remove_client(server, i);
             server_broadcast(server, &dc); //broadcast dc message
-        } 
+        }
     }
 }
 
