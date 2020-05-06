@@ -64,6 +64,7 @@ void *server_thread_func(void *null) {
         else if (rec.kind == BL_MESG) iprintf(&simpio, "[%s] : %s\n", rec.name, rec.body);
         else if (rec.kind == BL_JOINED) iprintf(&simpio, "-- %s JOINED --\n", rec.name);
         else if (rec.kind == BL_DEPARTED) iprintf(&simpio, "-- %s DEPARTED --\n", rec.name);
+        else if (rec.kind == BL_DISCONNECTED) iprintf(&simpio, "-- %s DISCONNECTED--\n", rec.name);
     }
     //cancel user thread before you go
     pthread_cancel(user_thread);

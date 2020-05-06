@@ -13,7 +13,6 @@ void alarm_handler(int sig_num) {
     printf("ALARMED");
     fflush(stdout);
     ticked = 1;
-    alarm(1);
 }
 
 int main(int argc, char *argv[]) {
@@ -44,11 +43,13 @@ int main(int argc, char *argv[]) {
         printf("Main loop...s\n");
         fflush(stdout);
         if (ticked) {
-            ticked = 0;
             printf("ALARM RESET");
             fflush(stdout);
+            server_ping_clients(&server);
             server_tick(&server);
             server_remove_disconnected(&server, 10);
+            ticked = 0;
+            alarm(1);
         }
         server_check_sources(&server); //check all sources
         if (server_join_ready(&server))  server_handle_join(&server); // handle join if ready

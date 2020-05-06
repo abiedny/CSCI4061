@@ -94,6 +94,7 @@ int server_remove_client(server_t *server, int idx) {
         if (server->client[i + 1].name == NULL) break; //will this segfault?
         server->client[i] = server->client[i+1];
     }
+    server->n_clients--;
     return idx;
 }
 
@@ -223,15 +224,16 @@ void server_ping_clients(server_t *server) {
 // necessitating index adjustments.
 void server_remove_disconnected(server_t *server, int disconnect_secs) {
     for (int i = 0; i < server->n_clients; i++) {
+        printf("Servertime %i - Clienttime %i > dc secs %i\n", server->time_sec, server->client[i].last_contact_time, disconnect_secs);
         if ( (server->time_sec - server->client[i].last_contact_time) > disconnect_secs ) {
             //client is dc'ed
+            printf("CLIENT DC'ed\n");
             mesg_t dc;
             memset(&dc, '\0', sizeof(mesg_t));
             dc.kind = BL_DISCONNECTED;
             strcpy(dc.name, server->client[i].name);
             server_remove_client(server, i);
             server_broadcast(server, &dc); //broadcast dc message
-            i--; //this spot in server->clients will be reassigned with server_remove_client, so adjust loop
         } 
     }
 }
