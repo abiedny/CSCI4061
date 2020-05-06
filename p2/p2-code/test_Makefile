@@ -11,7 +11,7 @@ clean-tests :
 	rm -f *.* 
 
 ############################################################
-# 'make zip' to create p1-code.zip for submission
+# 'make zip' to create p2-code.zip for submission
 AN=p2
 SHELL  = /bin/bash
 CWD    = $(shell pwd | sed 's/.*\///g')

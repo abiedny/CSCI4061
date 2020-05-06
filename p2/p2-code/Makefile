@@ -22,8 +22,6 @@ simpio.o : simpio.c blather.h
 clean :
 	rm -rf *.o
 	rm -rf *.fifo
-	rm -rf test-data/*.fifo
-	rm -rf test-data/*.o
 	rm -f bl_client
 	rm -f bl_server
 
