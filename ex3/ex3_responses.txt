@@ -1,0 +1,82 @@
+Q1.
+
+As each thread is opening the file after it is spawned, the write position of each thread in the x.txt file starts at the begining of the file.
+This means that as each thread runs, they will all start the write from the same position in the file, overwriting eachother's output. The 
+actual program output is then at the mercy of the scheduler, as whichever 5 write() calls are scheduled last will be the output in the file.
+
+To fix this, the out_fd file should be opened in main() and assigned to a global variable, and each thread should use a mutex lock before writing
+to the file. This way each thread would be writing using the same position pointer, and the mutex would ensure the entire output for each
+thread was printed without interruption from other threads.
+
+Q2.
+
+Threads and processes take nearly the same amount of time to create because processes do not have to copy the entire process image. Instead, for any
+memory that is shared between parent and child processes, the OS simply sets the virtual memory space of the new process to reference the same
+physical memory space, meaning it points to the same data without having to physically copy it.
+
+Q3.
+
+She could use a call to alarm(n), which will signal the calling process with an alarm signal after n seconds. By setting the disposition of the
+program to an alarm signal to a function such as:
+
+int isAlarmed = 0;
+void sig_alarmed(int sig_type) {
+    isAlarmed = 1;
+}
+
+She could set a global flag every 5 seconds. In the main program, she could do something like:
+
+int isConnected = 1;
+if (isAlarmed) {
+    alarm(5);
+    isConnected = is_server_connected();
+}
+
+And then later on in the code use the isConnected variable to nicely exit the game if it is false. The alarm() call will need to be made in main() initially to set things up, and if the is_server_connected() function takes longer than 5 seconds, this method would not poll the server accurately every 5 seconds.
+
+Q4.
+
+He is forgetting that FIFO's are not two way, whereas sockets are. In addition, he is forgetting that server-side sockets automatically open another
+socket for communication after accepting a client when using accept().
+
+To fix this, he will need to first establish and monitor a listen/join fifo, where clients can write requests to join the server to. This is similar to
+listening for clients on a socket server. Then once a client writes a join request and the server receives it, two more FIFO's will need to be created for
+communication with that client, to_client and from_client. Alongside this he will need a mechanism to do bookkeeping of all the clients, and to
+monitor the from_client FIFO's for incoming data from clents.
+
+Q5.
+
+If bl_server used read() on every file descriptor it was monitoring, the server wouldn't work. If there is no data to be read() for one 
+fd, then read() would block until data was available. That would mean that even if data was available from another client, the server couldn't read it
+until every read() call before that stopped blocking - making communication impossible.
+
+Poll() was used to run a routine if there was data ready from ANY of the clients, which made the server able to respond to data received as
+fast as possible.
+
+Q6.
+
+The bl_client program spawns two threads: one to constantly monitor if there are messages from the server, and another to constantly
+monitor if there was data ready to write to the server. As each thread only needed to manage one file descriptor (the to and from FIFO's),
+the threads could simply block themselves by read()ing their fd's until data was ready for them without getting in the way of eachother. As they where
+seperate threads, they did not block eachother, effectively multiplexing the I/O in bl_client.
+
+Q7.
+
+Instead of using poll() like server_check_sources() does, theis approach would spawn a thread for the join FIFO, and a thread
+for each client. The join thread would read() the join FIFO until a request was ready. When one was, it would use a mutex to lock the
+global "server" struct, add the client, broadcast a client joined message to all clients, and the unlock the mutex. It would also need to spawn a thread for that client.
+
+Each client thread would monitor the to_server FIFO for their client, and read() until a message is ready. When one was, it would mutex
+lock the global server data structure, and then call the server_handle_client function, and then unlock the mutex.
+
+Q8.
+
+I would scrap most of what is currently there and use a memory-mapped file to store the array of host_t's as binary. The current code 
+is slow because it reads in the entire file twice, modifies a local copy, and then writes the entire thing back. All those slow I/O operations
+are affecting performance.
+
+My solution maps the file to memory, and adds a file header_t struct to be written at the begining of the file, containing info on number of entires,
+and anything else that may be needed. The rest of the file is binary host_t's. To modify an IP, the function update_ip() is included, which will
+calculate an offset for the mmap'ed file pointer, cast that location as a pointer to a host_t, and then update the IP field based on an argument
+to the function. This is all pointer arithmetic, so it is much faster than repeated reads and writes. In addition, IP updates are made directly
+to the file, meaning that changed data does not need to be "saved" to the disc.

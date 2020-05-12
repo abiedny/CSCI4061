@@ -1,0 +1,136 @@
+                           _________________
+
+                            HW 12 QUESTIONS
+                           _________________
+
+
+- Name: Alex Biedny
+- NetID: biedn001
+
+Write your answers to the questions below directly in this text file.
+Submit the whole text file while taking the associated quiz.
+
+
+Problem 1 `http_get.c'
+======================
+
+  Examine the source code for `http_get.c' and use it to contact a few
+  hosts and files such as those shown at the top of the source.  Answer
+  the following questions.
+
+
+A
+~
+
+  - What is the full name of the that protocol is being employed?
+  - Which port does the server listen on in this protocol?
+
+HTTP over TCP/IP, the server listens on port 80.
+
+
+B
+~
+
+  Describe which system calls are used to find an internet address,
+  create a socket, and connect the socket to the found address.
+
+The address is found with getaddrinfo(), the a socket is allocated and setup with socket(), 
+and finally, connect() is used to connect the socket itself.
+
+
+C
+~
+
+  In this protocol, which entity, SERVER or CLIENT, sends data first?
+  (Though you don't have access to a server code, this should be obvious
+  from the structure of the client code).
+
+	The client.
+
+
+D
+~
+
+  Does the protocol work in plain text (human readable) or in binary
+  format (harder for humans to read directly).  Show examples/evidence
+  to support your answer.
+
+Plain text. The request is setup with snprintf()'s, putting readable text into a buffer ready to send. The response
+is also human readable.
+
+E
+~
+
+  Many protocols use /headers/ which are meant to convey information
+  between the communication programs about the state of the
+  communication but are NOT data that a program user would be interested
+  in.  Show a few headers which appear in communication and describe
+  what you infer their meaning to be.
+
+Content-Type, which tells if the response data is plain text, JSON, XML, etc.
+Content-Length, is the length of the response data.
+Cache-Control likely sets an expiration timer for broswer cached data about the site.
+
+F
+~
+
+  Something folks using `http_get' will notice is that many sites report
+  something along the following lines:
+  ,----
+  | HTTP/1.1 301 Moved Permanently
+  `----
+  This is a common response to redirect requests to new locations of
+  sites that have re-arranged.  It is also used to indicate a PROTOCOL
+  CHANGE, that standard HTTP is not to be used any more. One will notice
+  this when doing
+
+  ,----
+  | > http_get www-users.cs.umn.edu /~kauffman/congrads.txt
+  `----
+
+  Look for clues in the returned headers as to the new location of the
+  page and the new and more complex protocol required to get its
+  contents. Report your findings below.
+
+The file moved to https://www-users.cs.umn.edu/~kauffman/congrads.txt, which is HTTPS instead of HTTP.
+
+
+Problem 2 `http_get_ssl.c'
+==========================
+
+  Examine the source code for `http_get_ssl.c' and use it to contact
+  some of the same hosts that you did with `http_get.c'.  Answer the
+  following questions.
+
+
+A
+~
+
+  Determine what additional measures `http_get_ssl.c' employs to use a
+  secure protocol for communication with a server.  Show the code block
+  that accomplishes this (though no explanation is required).
+
+////////////////////////////////////////////////////////////////////////////////
+  // Initialize and set up a secure connection with the SSL library
+  OpenSSL_add_all_algorithms();
+  SSL_library_init();
+  const SSL_METHOD *method = SSLv23_client_method();
+  SSL_CTX *ctx = SSL_CTX_new(method);
+  SSL *ssl_connection = SSL_new(ctx); 
+  assert(ssl_connection != NULL);
+  SSL_set_fd(ssl_connection, sockfd);
+  SSL_connect(ssl_connection);
+  // Setup of SSL is complete. The variable 'ssl_connection' is used
+  // like a file descriptor with SSL_write() / SSL_read(). The data
+  // transmitted will be automatically encrypted/decrypted.
+  ////////////////////////////////////////////////////////////////////////////////
+
+
+B
+~
+
+  Aside from the code block that is added above to enable secure
+  communication, are there any other large changes between `http_get.c'
+  and `http_get_ssl.c' to implement the secure communication version?
+
+the SSL_write() and SSL_read() functions are used instead of a normal write() or read() to a socket fd.
